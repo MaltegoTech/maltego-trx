@@ -242,14 +242,3 @@ class MaltegoMsg:
 
     def getTransformSetting(self, key):
         return self.TransformSettings.get(key)
-
-
-def test_message():
-    with open("libs/request_body.xml") as f:
-        xml = f.read()
-        msg = MaltegoMsg(xml)
-        print(msg.__dict__)
-
-
-if __name__ == "__main__":
-    test_message()
