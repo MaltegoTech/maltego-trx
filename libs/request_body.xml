@@ -6,7 +6,7 @@
                <Field Name="fqdn" DisplayName="Domain Name">baidu.com</Field>
             </AdditionalFields>
             <Value>baidu.com</Value>
-            <Weight>100</Weight>
+            <Weight>87</Weight>
          </Entity>
       </Entities>
       <TransformFields>

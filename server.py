@@ -1,4 +1,3 @@
-import traceback
 import logging
 
 from flask import Flask, request
@@ -11,7 +10,7 @@ log = logging.getLogger("maltego.server")
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
-debug = True
+URL_TEMPLATE = '/run/<transform_name>/'
 
 discovered_transforms = get_transforms()
 manually_added_transforms = {
@@ -20,23 +19,33 @@ manually_added_transforms = {
     "phrase-to-as": phrase_to_as,
 }
 
-# Combine two sets of transforms
-all_transforms = discovered_transforms.copy()
-all_transforms.update(manually_added_transforms)
+# Combine two sets of transforms, and make transform name case insensitive
+all_transforms = {}
+for name, method in list(discovered_transforms.items()) + list(manually_added_transforms.items()):
+    key = name.lower()
+    if key in all_transforms:
+        log.error("Multiple transforms found with the same name \'%s\'. (Transform names are case insensitive)" % key)
+    else:
+        all_transforms[key] = method
+        log.info("Transform '%s' available at path: %s" % (key, URL_TEMPLATE.replace("<transform_name>", key)))
 
 
 def run_transform(transform_name, request_body):
     try:
         client_msg = MaltegoMsg(request_body)
         transform_method = all_transforms[transform_name]
-        return transform_method(client_msg), 200
+        if hasattr(transform_method, "run_transform"):
+            return transform_method.run_transform(client_msg), 200  # Transform class
+        else:
+            return transform_method(client_msg), 200  # Transform method
     except Exception as e:
         log.error("An exception occurred while executing your transform code.")
         log.error(e, exc_info=True)
 
 
-@app.route('/run/<transform_name>/', methods=['GET', 'POST'])
+@app.route(URL_TEMPLATE, methods=['GET', 'POST'])
 def transform_runner(transform_name):
+    transform_name = transform_name.lower()
     if transform_name in all_transforms:
         if request.method == 'POST':
             return run_transform(transform_name, request.body)
