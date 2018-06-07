@@ -1,4 +1,5 @@
-from libs.Maltego import MaltegoMsg
+from libs.Maltego import MaltegoMsg, MaltegoEntity, LINK_STYLES
+from libs.entities import Domain
 from server import all_transforms
 from legacy_example import dns_to_ip
 
@@ -24,5 +25,20 @@ def test_discovered_transform(msg):
     assert legacy_xml == discovered_xml
 
 
+def test_entity_xml():
+    ent = MaltegoEntity(Domain, "pàterva.com")  # Test unicode a
+    ent.setWeight(10)
+    ent.setIconURL("https://www.paterva.com/web7/img/logo.png")
+    ent.setLinkColor("000000")
+    ent.setLinkStyle(LINK_STYLES["dotted"])
+    ent.addDisplayInformation("<a href='%s'>Website</a>" % "https://www.paterva.com/", title="Website")
+    xml = ent.returnEntity()
+    with open("libs/test_entity.xml") as f:
+        correct_xml = f.read()
+
+    assert xml == correct_xml
+
+
 msg = test_message()
 test_discovered_transform(msg)
+test_entity_xml()
