@@ -71,7 +71,7 @@ docker-compose -f prod.yml up --build
 
 For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.
 
-# Legacy Transforms
+## Legacy Transforms
 If you have old TRX transforms that are written as functions, 
 they can be registered with the server using the `maltego_trx.registry.register_transform_function` method.
 

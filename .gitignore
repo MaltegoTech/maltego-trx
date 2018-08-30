@@ -1,4 +1,6 @@
 .idea
-
+build/
+dist/
 *.pyc
 __pycache__
+maltego_trx.egg-info
