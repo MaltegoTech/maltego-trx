@@ -1,15 +1,27 @@
 import logging
 import pkgutil
 
-import transforms
-from libs.transform import DiscoverableTransform
+from maltego_trx.transform import DiscoverableTransform
 
 log = logging.getLogger("maltego.discovery")
 module_name = "transforms"
 
+transform_functions = []
+transform_classes = []
 
-def discover_transforms(module):  # Get transforms from a given module
-    transform_classes = []
+
+def register_transform_function(transform_function):
+    # Register a transform function with the server.
+    global transform_functions
+    if transform_function not in transform_functions:
+        transform_functions.append(transform_function)
+    else:
+        log.warning("Transform function already registered.")
+
+
+def register_transform_classes(module):
+    # Register transform classes from a given python module
+    global transform_classes
 
     prefix = module.__name__ + "."  # transform.
     for importer, modname, ispkg in pkgutil.iter_modules(module.__path__, prefix):
@@ -24,15 +36,12 @@ def discover_transforms(module):  # Get transforms from a given module
             else:
                 log.info('Ignoring File: "%s" does not contain a class of the same name' % name)
 
-    return transform_classes
 
-
-def get_transforms():
-    """
-    Discover transforms from the project's "transforms" folder.
-    """
-    mapping = {}
-    all_transforms = discover_transforms(transforms)
-    for transform_cls in all_transforms:
-        mapping[transform_cls.__name__] = transform_cls
-    return mapping
+def print_registered():
+    print("Transform Functions:")
+    for func in transform_functions:
+        print(func.__name__)
+    print("")
+    print("Transform Classes:")
+    for cls in transform_classes:
+        print(cls.__name__)

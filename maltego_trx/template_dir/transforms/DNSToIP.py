@@ -1,8 +1,8 @@
 import socket
-from libs.Maltego import UIM_TYPES
-from libs.entities import IPAddress
+from maltego_trx.maltego import UIM_TYPES
+from maltego_trx.entities import IPAddress
 
-from libs.transform import DiscoverableTransform
+from maltego_trx.transform import DiscoverableTransform
 
 
 class DNSToIP(DiscoverableTransform):

@@ -1,4 +1,4 @@
-from libs.Maltego import MaltegoTransform
+from maltego_trx.maltego import MaltegoTransform
 
 
 class DiscoverableTransform:

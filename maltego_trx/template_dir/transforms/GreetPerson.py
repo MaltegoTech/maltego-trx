@@ -1,6 +1,6 @@
-from libs.entities import Phrase
+from maltego_trx.entities import Phrase
 
-from libs.transform import DiscoverableTransform
+from maltego_trx.transform import DiscoverableTransform
 
 
 class GreetPerson(DiscoverableTransform):

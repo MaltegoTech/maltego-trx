@@ -2,6 +2,12 @@ import re
 from six import text_type, binary_type
 
 
+def name_to_path(name):
+    # Convert function name to a URL path
+    path = name.replace("_", "-")
+    return path.lower()
+
+
 def make_utf8(val):
     """
     Py2: makes variable a utf-8 encoded Unicode type

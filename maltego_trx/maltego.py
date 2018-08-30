@@ -5,6 +5,8 @@ from xml.dom import minidom
 from .utils import remove_invalid_xml_chars
 from .entities import Phrase
 
+VERSION = "1.1"
+
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
 BOOKMARK_COLOR_GREEN = "1"
@@ -223,7 +225,8 @@ class MaltegoMsg:
 
         # Additional Fields
         self.Properties = {}
-        additional_fields = entity.getElementsByTagName("AdditionalFields")[0].getElementsByTagName("Field")
+        additional_fields_tag = entity.getElementsByTagName("AdditionalFields")
+        additional_fields = additional_fields_tag[0].getElementsByTagName("Field") if additional_fields_tag else []
         for field in additional_fields:
             name = field.getAttribute("Name")
             value = self._get_text(field)
@@ -231,7 +234,8 @@ class MaltegoMsg:
 
         # Transform Settings
         self.TransformSettings = {}
-        settings = maltego_msg.getElementsByTagName("TransformFields")[0].getElementsByTagName("Field")
+        settings_tag = maltego_msg.getElementsByTagName("TransformFields")
+        settings = settings_tag[0].getElementsByTagName("Field") if settings_tag else []
         for setting in settings:
             name = setting.getAttribute("Name")
             value = self._get_text(setting)
