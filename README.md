@@ -1,38 +1,33 @@
-# Maltego Python Transform Library
+# Maltego TRX Python Library
 
-## Development Setup
-### Using Docker
-The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
+## Getting Started
+The library can be used in either Python2 or Python 3.
 
-Run the following to start the development server:
+To install the trx library run the following command:
 ```
-docker-compose up
-```
-
-### Running directly on your machine
-The transform library should work on any machine with Python installed.
-
-With Python 2.7 or 3.5 installed, you will need to install the server dependencies using:
-```
-pip install -r requirements.txt
+pip install maltego-trx
 ```
 
-After installing the required dependencies, start the development server using:
+After installing you can create a new project by running the following command:
 ```
-python server.py
+maltego-trx start new_project
 ```
 
-## Writing a Transform
-It is recommended that you write your transforms as a class, with one class per file.
+This will create a folder new_project with the recommend project structure.
 
-This will allow the server to automatically discover transforms that you write.
+**Adding a Transform:**
 
-Future updates to this library will allow transform meta information (name, input type, etc.) to be defined in code.
+Add a new transform by creating a new python file in the "transforms" folder of your directory.
+
+Any file in the folder where the **class name matches the filename** and the class inherits from Transform, will automatically be discovered and added to your server.
+
 
 A simple transform would look like the following:
+
+`new_project/transforms/GreetPerson.py`
 ```python
-from libs.entities import Phrase
-from libs.transform import DiscoverableTransform
+from maltego_trx.entities import Phrase
+from maltego_trx.transform import DiscoverableTransform
 
 
 class GreetPerson(DiscoverableTransform):
@@ -45,4 +40,59 @@ class GreetPerson(DiscoverableTransform):
         person_name = request.Value
 
         response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
+```
+
+**Running the development server:**
+
+You can start the development server, by running the following command:
+```
+python server.py
+```
+
+This will startup a development server that automatically reloads every time the code is changed.
+
+## Demo Project
+The demo folder provides an example project. The Docker files given can be used to setup and run your project in Docker.
+
+The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
+
+If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, 
+then you can use the following commands to run the server in Docker.
+
+Run the following to start the development server:
+```
+docker-compose up
+```
+
+Run the following command to run a production gunicorn server:
+```
+docker-compose -f prod.yml up --build
+```
+
+For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.
+
+# Legacy Transforms
+If you have old TRX transforms that are written as functions, 
+they can be registered with the server using the `maltego_trx.registry.register_transform_function` method.
+
+Import the transform function into the `project.py` file in the root directory of your project and call the register method.
+
+`project.py`
+```python
+
+from .legacy_transforms import trx_DNS2IP
+
+register_transform_function(trx_DNS2IP)
+
+``` 
+
+You will need to update the Maltego import in your old transform files.
+
+Change:
+```python
+from Maltego import *
+```
+To:
+```python
+from maltego_trx.maltego import *
 ```
