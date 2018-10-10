@@ -42,7 +42,8 @@ class GreetPerson(DiscoverableTransform):
         response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
 ```
 
-**Running the development server:**
+## Running The Server
+### For Development
 
 You can start the development server, by running the following command:
 ```
@@ -51,8 +52,16 @@ python server.py
 
 This will startup a development server that automatically reloads every time the code is changed.
 
-## Demo Project
-The demo folder provides an example project. The Docker files given can be used to setup and run your project in Docker.
+### For Production
+You can run a gunicorn transform server, after installing gunicorn on the host machine and then running the command:
+```
+gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app
+```
+
+*For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
+
+## Run a Docker Transform server
+The `demo` folder provides an example project. The Docker files given can be used to setup and run your project in Docker.
 
 The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
 
@@ -69,7 +78,7 @@ Run the following command to run a production gunicorn server:
 docker-compose -f prod.yml up --build
 ```
 
-For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.
+*For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
 
 ## Legacy Transforms
 If you have old TRX transforms that are written as functions, 
@@ -96,3 +105,69 @@ To:
 ```python
 from maltego_trx.maltego import *
 ```
+
+## Reference
+### Constants
+The following constants can be imported from `maltego_trx.maltego`.
+
+**Message Types:**
+ - `UIM_FATAL`
+ - `UIM_PARTIAL`
+ - `UIM_INFORM`
+ - `UIM_DEBUG`
+ 
+**Bookmark Colors:**
+ - `BOOKMARK_COLOR_NONE`
+ - `BOOKMARK_COLOR_BLUE`
+ - `BOOKMARK_COLOR_GREEN`
+ - `BOOKMARK_COLOR_YELLOW`
+ - `BOOKMARK_COLOR_ORANGE`
+ - `BOOKMARK_COLOR_RED`
+
+**Link Styles:**
+ - `LINK_STYLE_NORMAL`
+ - `LINK_STYLE_DASHED`
+ - `LINK_STYLE_DOTTED`
+ - `LINK_STYLE_DASHDOT`
+
+
+
+### Request/MaltegoMsg
+The request/maltego msg object given to the transform contains the information about the input entity.
+
+**Attributes:**
+ - `Value: str`: The display value of the input entity on the graph
+ - `Weight: int`: The weight of the input entity
+ - `Slider: int`: Results slider setting in the client
+ - `Type: str`: The input entity type
+ - `Properties: dict(str: str)`: A key-value dictionary of the input entity properties
+ - `TransformSettings: dict(str: str)`: A key-value dictionary of the transform settings
+
+**Methods:**
+ - `getProperty(name: str)`: get a property value of the input entity
+ - `getTransformSetting(name: str)`: get a transform setting value
+
+### Response/MaltegoTransform
+
+**Methods:**
+ - `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object created by the method.
+ - `addUIMessagte(msg: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message type constant.
+ 
+### Entity
+
+**Methods:**
+ - `setType(type: str)`: Set the entity type
+ - `setValue(value: str)`: Set the entity value
+ - `setWeight(weight: int)`: Set the entity weight
+ - `addDisplayInformation(content: str, title='Info')`: Add display information for the entity
+ - `addProperty(name: str, display: str, matchingRule: str, value: str)`: Add a property to the entity. Matching rule can be `strict`or `loose`.
+ - `setIconURL(url: str)`: Set the entity icon URL
+ - `setBookmark(color: BookmarkColor)`: Set bookmark color
+ - `setNote(note: str)`: Set note content
+
+**Link Methods:**
+ - `setLinkColor(color: str)`: Set the link color
+ - `setLinkStyle(style: LinkStyle)`: Set the link style
+ - `setLinkThickness(thickness: int)`: Set link thickness
+ - `setLinkLabel(label: str)`: Set the label of the link
+ - `reverseLink()`: Reverse the link direction
