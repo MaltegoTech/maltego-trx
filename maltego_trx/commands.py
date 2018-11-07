@@ -4,6 +4,9 @@ import shutil
 
 import maltego_trx
 
+"""
+Receive commands run to start a new project.
+"""
 
 def execute_from_command_line():
     args = sys.argv[1:]
