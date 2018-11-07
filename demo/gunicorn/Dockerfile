@@ -6,9 +6,9 @@ WORKDIR /code
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-# Install Gunicorn for running product server
+# Install Gunicorn for running production server
 RUN pip install gunicorn
 
-COPY . /code
+COPY .. /code
 
 CMD ["python", "server.py"]
