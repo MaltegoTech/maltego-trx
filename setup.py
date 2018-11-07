@@ -1,7 +1,8 @@
 from setuptools import setup
+from maltego_trx.maltego import VERSION
 
 setup(name='maltego-trx',
-      version='1.3',
+      version=VERSION,
       description='Python library used to develop Maltego transforms',
       url='https://github.com/paterva/maltego-trx/',
       author='Paterva Staff',
