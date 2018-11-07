@@ -1,11 +1,8 @@
-# Updated Maltego Python library
-# 2018/06/05
-# See TRX documentation
 from xml.dom import minidom
 from .utils import remove_invalid_xml_chars
 from .entities import Phrase
 
-VERSION = "1.1"
+VERSION = "1.3"
 
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
@@ -215,34 +212,48 @@ class MaltegoMsg:
             print("Error: Unable to convert XML value for '%s' to an integer." % tag_name)
             return 0
 
-    def __init__(self, MaltegoXML=""):
-        maltego_msg = minidom.parseString(MaltegoXML)
-        entities = maltego_msg.getElementsByTagName("Entity")
-        entity = entities[0]
+    def __init__(self, MaltegoXML="", LocalArgs=[]):
+        if MaltegoXML:
+            maltego_msg = minidom.parseString(MaltegoXML)
+            entities = maltego_msg.getElementsByTagName("Entity")
+            entity = entities[0]
 
-        self.Value = self._get_text(entity.getElementsByTagName("Value")[0])
-        self.Type = entity.attributes["Type"].value
+            self.Value = self._get_text(entity.getElementsByTagName("Value")[0])
+            self.Type = entity.attributes["Type"].value
 
-        self.Weight = self._get_int(entity, "Weight")
-        self.Slider = self._get_int(maltego_msg, "Limits", attr_name="SoftLimit")
+            self.Weight = self._get_int(entity, "Weight")
+            self.Slider = self._get_int(maltego_msg, "Limits", attr_name="SoftLimit")
 
-        # Additional Fields
-        self.Properties = {}
-        additional_fields_tag = entity.getElementsByTagName("AdditionalFields")
-        additional_fields = additional_fields_tag[0].getElementsByTagName("Field") if additional_fields_tag else []
-        for field in additional_fields:
-            name = field.getAttribute("Name")
-            value = self._get_text(field)
-            self.Properties[name] = value
+            # Additional Fields
+            self.Properties = {}
+            additional_fields_tag = entity.getElementsByTagName("AdditionalFields")
+            additional_fields = additional_fields_tag[0].getElementsByTagName("Field") if additional_fields_tag else []
+            for field in additional_fields:
+                name = field.getAttribute("Name")
+                value = self._get_text(field)
+                self.Properties[name] = value
 
-        # Transform Settings
-        self.TransformSettings = {}
-        settings_tag = maltego_msg.getElementsByTagName("TransformFields")
-        settings = settings_tag[0].getElementsByTagName("Field") if settings_tag else []
-        for setting in settings:
-            name = setting.getAttribute("Name")
-            value = self._get_text(setting)
-            self.TransformSettings[name] = value
+            # Transform Settings
+            self.TransformSettings = {}
+            settings_tag = maltego_msg.getElementsByTagName("TransformFields")
+            settings = settings_tag[0].getElementsByTagName("Field") if settings_tag else []
+            for setting in settings:
+                name = setting.getAttribute("Name")
+                value = self._get_text(setting)
+                self.TransformSettings[name] = value
+        elif LocalArgs:
+            self.Value = LocalArgs[0]
+            self.Type = "local.Unknown"
+
+            self.Weight = 100
+            self.Slider = 100
+
+            self.Properties = {}
+            for property_section in LocalArgs[1].split("#"):
+                name, value = property_section.split("=", 2)
+                self.Properties[name] = value
+
+            self.TransformSettings = {}
 
     def getProperty(self, key):
         return self.Properties.get(key)

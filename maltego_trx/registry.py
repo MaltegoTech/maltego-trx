@@ -1,13 +1,23 @@
 import logging
 import pkgutil
 
-from maltego_trx.transform import DiscoverableTransform
+from .transform import DiscoverableTransform
+from .utils import name_to_path
 
-log = logging.getLogger("maltego.discovery")
+log = logging.getLogger(__name__)
 module_name = "transforms"
 
 transform_functions = []
 transform_classes = []
+mapping = {}
+
+
+def update_mapping():
+    # Get mapping from URL path to transform
+    global mapping
+    for transform in transform_functions + transform_classes:
+        url_path = name_to_path(transform.__name__)
+        mapping[url_path] = transform
 
 
 def register_transform_function(transform_function):
@@ -17,6 +27,7 @@ def register_transform_function(transform_function):
         transform_functions.append(transform_function)
     else:
         log.warning("Transform function already registered.")
+    update_mapping()
 
 
 def register_transform_classes(module):
@@ -35,6 +46,7 @@ def register_transform_classes(module):
                     transform_classes.append(transform_cls)
             else:
                 log.info('Ignoring File: "%s" does not contain a class of the same name' % name)
+    update_mapping()
 
 
 def print_registered():
