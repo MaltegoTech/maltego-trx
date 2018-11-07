@@ -42,12 +42,12 @@ class GreetPerson(DiscoverableTransform):
         response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
 ```
 
-## Running The Server
+## Running The Transform Server
 ### For Development
 
 You can start the development server, by running the following command:
 ```
-python server.py
+python project.py runserver
 ```
 
 This will startup a development server that automatically reloads every time the code is changed.
@@ -80,31 +80,64 @@ docker-compose -f prod.yml up --build
 
 *For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
 
+## Local Transforms
+Transforms written using this library can be used as either local or server transforms.
+
+To run a local transform from your project, you will need to pass the following arguments:
+```
+project.py local <transform_name>
+```
+
+You can find the correct transform_name to use by running `python project.py list`.
+
+### Caveats
+The following values are not passed to local transforms, and will have dummy values in their place:
+- `type`: `local.Unknown`
+- `weight`: 100
+- `slider`: 100
+- `transformSettings`: {}
+
 ## Legacy Transforms
 If you have old TRX transforms that are written as functions, 
 they can be registered with the server using the `maltego_trx.registry.register_transform_function` method.
 
-Import the transform function into the `project.py` file in the root directory of your project and call the register method.
+In order to port your old transforms, make two changes:
+1. Import the MaltegoTransform class from the `maltego_trx` package instead of from a local file.
+2. Call the `register_transform_function` in order for the transform to be registered in your project.
 
-`project.py`
-```python
-
-from .legacy_transforms import trx_DNS2IP
-
-register_transform_function(trx_DNS2IP)
-
-``` 
-
-You will need to update the Maltego import in your old transform files.
+For example
 
 Change:
 ```python
 from Maltego import *
+
+def old_transform(m):
 ```
 To:
 ```python
-from maltego_trx.maltego import *
+from maltego_trx.maltego import MaltegoTransform
+from maltego_trx.registry import register_transform_function
+
+@register_transform_function
+def old_transform(m):
 ```
+
+## CLI
+The following commands can be run using the project.py file.
+
+### Run Server
+```
+python project.py runserver
+```
+
+Start a development server that you can use to develop new transforms.
+
+### List
+```
+python project.py list
+```
+
+List the available transforms together with their transform server URLs and local transform names.
 
 ## Reference
 ### Constants
