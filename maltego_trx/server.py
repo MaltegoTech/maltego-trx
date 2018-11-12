@@ -51,7 +51,7 @@ def run_transform(transform_name, client_msg):
 
 
 app = Flask(__name__)
-
+application = app  # application variable for usage with apache mod wsgi
 
 @app.route(URL_TEMPLATE, methods=['GET', 'POST'])
 def transform_runner(transform_name):
