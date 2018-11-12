@@ -2,8 +2,6 @@ from xml.dom import minidom
 from .utils import remove_invalid_xml_chars
 from .entities import Phrase
 
-VERSION = "1.3"
-
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
 BOOKMARK_COLOR_GREEN = "1"

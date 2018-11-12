@@ -1,4 +1,4 @@
-from .maltego import VERSION
+from maltego_trx import VERSION
 from .server import print_transforms, run_transform, get_exception_message
 from .registry import mapping
 from .maltego import MaltegoMsg

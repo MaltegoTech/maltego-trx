@@ -1,5 +1,5 @@
 from setuptools import setup
-from maltego_trx.maltego import VERSION
+from maltego_trx import VERSION
 
 setup(name='maltego-trx',
       version=VERSION,
