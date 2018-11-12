@@ -9,6 +9,6 @@ RUN pip install -r requirements.txt
 # Install Gunicorn for running production server
 RUN pip install gunicorn
 
-COPY .. /code
+COPY . /code
 
-CMD ["python", "server.py"]
+CMD ["python", "project.py", "runserver"]
