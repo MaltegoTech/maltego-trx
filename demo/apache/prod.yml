@@ -1,7 +1,7 @@
 version: '3'
 services:
   python:
-    build: ..
-    command: "gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app"
+    build: .
+    command: bash -c "service apache2 restart && tail -f /var/log/apache2/*.log"
     ports:
        - "8080:8080"

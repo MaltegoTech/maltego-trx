@@ -12,11 +12,12 @@ RUN apt-get install python-pip -y
 
 COPY ./TRX.conf /etc/apache2/sites-available/TRX.conf
 RUN a2ensite TRX.conf
+RUN echo "Listen 8080" >> /etc/apache2/ports.conf
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY . /code
+COPY . /var/www/TRX/
 
 RUN chown -R www-data:www-data /var/www/TRX/
 
