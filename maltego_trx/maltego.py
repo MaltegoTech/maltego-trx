@@ -185,7 +185,7 @@ class MaltegoTransform(object):
         lines.append("<UIMessages>")
         for message in self.UIMessages:
             type, message = message
-            lines.append(UIM_TEMPLATE % {"text": text, "type": type})
+            lines.append(UIM_TEMPLATE % {"text": message, "type": type})
         lines.append("</UIMessages>")
 
         lines.append("</MaltegoTransformResponseMessage>")

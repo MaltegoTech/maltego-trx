@@ -1,10 +1,10 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN mkdir /var/www/
 RUN mkdir /var/www/TRX/
 WORKDIR /var/www/TRX/
 
-# Install apache2 for production server
+# System dependencies
 RUN apt-get update
 RUN apt-get install apache2 -y
 RUN apt-get install libapache2-mod-wsgi -y
