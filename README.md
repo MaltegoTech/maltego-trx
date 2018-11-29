@@ -81,6 +81,8 @@ docker-compose -f prod.yml up --build
 *For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
 
 ## Local Transforms
+[Documentation](https://docs.maltego.com/support/solutions/articles/15000017605-writing-local-transforms-in-python)
+
 Transforms written using this library can be used as either local or server transforms.
 
 To run a local transform from your project, you will need to pass the following arguments:
@@ -98,6 +100,8 @@ The following values are not passed to local transforms, and will have dummy val
 - `transformSettings`: {}
 
 ## Legacy Transforms
+[Documentation](https://docs.maltego.com/support/solutions/articles/15000018299-porting-old-trx-transforms-to-the-latest-version)
+
 If you have old TRX transforms that are written as functions, 
 they can be registered with the server using the `maltego_trx.registry.register_transform_function` method.
 
@@ -107,7 +111,7 @@ In order to port your old transforms, make two changes:
 
 For example
 
-Change:
+In the legacy transform file, change:
 ```python
 from Maltego import *
 
@@ -116,11 +120,18 @@ def old_transform(m):
 To:
 ```python
 from maltego_trx.maltego import MaltegoTransform
-from maltego_trx.registry import register_transform_function
 
-@register_transform_function
 def old_transform(m):
 ```
+
+In the `project.py` file add the following:
+```python
+from maltego_trx.registry import register_transform_function
+from legacy_transform import trx_DNS2IP
+
+register_transform_function(trx_DNS2IP)
+```
+
 
 ## CLI
 The following commands can be run using the project.py file.
