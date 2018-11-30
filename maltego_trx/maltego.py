@@ -39,7 +39,7 @@ UIM_TYPES = {
     "debug": UIM_DEBUG,
 }
 
-ADD_FIELD_TEMPLATE = "<Field MatchingRule=\"%(matching)s\" Name=\"%(name)s\" DisplayName=\"%(display)s\">%(value)s</Field>"
+ADD_FIELD_TEMPLATE = "<Field MatchingRule=\"%(matching)s\" Name=\"%(name)s\" DisplayName=\"%(display)s\"><![CDATA[%(value)s]]></Field>"
 DISP_INFO_TEMPLATE = "<Label Name=\"%(name)s\" Type=\"text/html\"><![CDATA[' %(content)s ']]></Label>"
 UIM_TEMPLATE = "<UIMessage MessageType=\"%(type)s\">%(text)s</UIMessage>"
 
@@ -120,7 +120,7 @@ class MaltegoEntity(object):
     def returnEntity(self):
         lines = []
         lines.append("<Entity Type=\"%s\">" % str(self.entityType))
-        lines.append("<Value>%s</Value>" % str(self.value))
+        lines.append("<Value><![CDATA[%s]]></Value>" % str(self.value))
         lines.append("<Weight>%s</Weight>" % str(self.weight))
         if self.displayInformation:
             lines.append("<DisplayInformation>")
