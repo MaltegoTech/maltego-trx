@@ -165,7 +165,7 @@ The following constants can be imported from `maltego_trx.maltego`.
  - `BOOKMARK_COLOR_BLUE`
  - `BOOKMARK_COLOR_GREEN`
  - `BOOKMARK_COLOR_YELLOW`
- - `BOOKMARK_COLOR_ORANGE`
+ - `BOOKMARK_COLOR_PURPLE`
  - `BOOKMARK_COLOR_RED`
 
 **Link Styles:**
