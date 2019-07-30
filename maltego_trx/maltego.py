@@ -246,12 +246,25 @@ class MaltegoMsg:
             self.Weight = 100
             self.Slider = 100
 
-            self.Properties = {}
-            for property_section in LocalArgs[1].split("#"):
-                name, value = property_section.split("=", 2)
-                self.Properties[name] = value
+            if len(LocalArgs) > 1:
+                try:
+                    self.buildProperties(LocalArgs[1].split("#"))
+                except ValueError:
+                    temp_properties = []
+                    for property_section in LocalArgs[1].split("#"):
+                        if "=" in property_section:
+                            temp_properties.append(property_section)
+                        else:
+                            temp_properties[-1] += ("#" + property_section)
+                    self.buildProperties(temp_properties)
 
             self.TransformSettings = {}
+
+    def buildProperties(self, key_value_array):
+        self.Properties = {}
+        for property_section in key_value_array:
+            name, value = property_section.split("=", 2)
+            self.Properties[name] = value
 
     def getProperty(self, key):
         return self.Properties.get(key)
