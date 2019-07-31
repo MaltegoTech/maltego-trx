@@ -1,6 +1,8 @@
+import uuid;
 from xml.dom import minidom
-from .utils import remove_invalid_xml_chars
+
 from .entities import Phrase
+from .utils import remove_invalid_xml_chars
 
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
@@ -90,7 +92,7 @@ class MaltegoEntity(object):
         self.addProperty('link#maltego.link.label', 'Label', '', label)
 
     def reverseLink(self):
-        self.addProperty('link#maltego.link.direction','link#maltego.link.direction','loose','output-to-input')
+        self.addProperty('link#maltego.link.direction', 'link#maltego.link.direction', 'loose', 'output-to-input')
 
     def setBookmark(self, bookmark):
         self.addProperty('bookmark#', 'Bookmark', '', bookmark)
@@ -247,24 +249,25 @@ class MaltegoMsg:
             self.Slider = 100
 
             if len(LocalArgs) > 1:
-                try:
-                    self.buildProperties(LocalArgs[1].split("#"))
-                except ValueError:
-                    temp_properties = []
-                    for property_section in LocalArgs[1].split("#"):
-                        if "=" in property_section:
-                            temp_properties.append(property_section)
-                        else:
-                            temp_properties[-1] += ("#" + property_section)
-                    self.buildProperties(temp_properties)
+                hash_rnd = uuid.uuid4().hex.upper()[0:7]
+                equals_rnd = uuid.uuid4().hex.upper()[0:7]
+                bslash_rnd = uuid.uuid4().hex.upper()[0:7]
+                text = LocalArgs[1] \
+                    .replace("\\\\", bslash_rnd) \
+                    .replace("\\#", hash_rnd) \
+                    .replace("\\=", equals_rnd)
 
-            self.TransformSettings = {}
+                self.buildProperties(text.split("#"), hash_rnd, equals_rnd, bslash_rnd)
+                self.TransformSettings = {}
 
-    def buildProperties(self, key_value_array):
+    def buildProperties(self, key_value_array, hash_rnd, equals_rnd, bslash_rnd):
         self.Properties = {}
         for property_section in key_value_array:
             name, value = property_section.split("=", 2)
-            self.Properties[name] = value
+            self.Properties[name] = value \
+                .replace(hash_rnd, "#") \
+                .replace(equals_rnd, "=") \
+                .replace(bslash_rnd, "\\")
 
     def getProperty(self, key):
         return self.Properties.get(key)
