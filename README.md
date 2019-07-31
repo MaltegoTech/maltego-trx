@@ -200,18 +200,18 @@ The request/maltego msg object given to the transform contains the information a
 ### Entity
 
 **Methods:**
- - `setType(type: str)`: Set the entity type
+ - `setType(type: str)`: Set the entity type (e.g. "Phrase" for maltego.Phrase entity)
  - `setValue(value: str)`: Set the entity value
  - `setWeight(weight: int)`: Set the entity weight
- - `addDisplayInformation(content: str, title='Info')`: Add display information for the entity
- - `addProperty(name: str, display: str, matchingRule: str, value: str)`: Add a property to the entity. Matching rule can be `strict`or `loose`.
+ - `addDisplayInformation(content: str, title: str)`: Add display information for the entity.
+ - `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. Matching rule can be `strict` or `loose`.
  - `setIconURL(url: str)`: Set the entity icon URL
- - `setBookmark(color: BookmarkColor)`: Set bookmark color
+ - `setBookmark(bookmark: int)`: Set bookmark color index (e.g. -1 for BOOKMARK_COLOR_NONE, 3 for BOOKMARK_COLOR_PURPLE)
  - `setNote(note: str)`: Set note content
 
 **Link Methods:**
- - `setLinkColor(color: str)`: Set the link color
- - `setLinkStyle(style: LinkStyle)`: Set the link style
- - `setLinkThickness(thickness: int)`: Set link thickness
+ - `setLinkColor(color: str)`: Set the link color (e.g. hex "#0000FF" for blue)
+ - `setLinkStyle(style: int)`: Set the link style index (e.g. 0 for LINK_STYLE_NORMAL, 2 for LINK_STYLE_DOTTED)
+ - `setLinkThickness(thick: int)`: Set link thickness (default is 1)
  - `setLinkLabel(label: str)`: Set the label of the link
  - `reverseLink()`: Reverse the link direction
