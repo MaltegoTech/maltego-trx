@@ -56,9 +56,9 @@ class MaltegoEntity(object):
         self.displayInformation = []
         self.iconURL = ""
 
-    def setType(self, type=None):
-        if type:
-            self.entityType = type
+    def setType(self, stype=None):
+        if stype:
+            self.entityType = stype
 
     def setValue(self, value=None):
         if value:
