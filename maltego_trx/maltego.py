@@ -47,8 +47,8 @@ UIM_TEMPLATE = "<UIMessage MessageType=\"%(type)s\">%(text)s</UIMessage>"
 
 
 class MaltegoEntity(object):
-    def __init__(self, type=None, value=None):
-        self.entityType = type if type else Phrase
+    def __init__(self, etype=None, value=None):
+        self.entityType = etype if etype else Phrase
         self.value = value if value else ""
 
         self.weight = 100
@@ -149,8 +149,8 @@ class MaltegoTransform(object):
         self.exceptions = []
         self.UIMessages = []
 
-    def addEntity(self, type=None, value=None):
-        entity = MaltegoEntity(type, value)
+    def addEntity(self, etype=None, value=None):
+        entity = MaltegoEntity(etype, value)
         self.entities.append(entity)
         return entity
 
@@ -186,8 +186,8 @@ class MaltegoTransform(object):
 
         lines.append("<UIMessages>")
         for message in self.UIMessages:
-            type, message = message
-            lines.append(UIM_TEMPLATE % {"text": message, "type": type})
+            etype, message = message
+            lines.append(UIM_TEMPLATE % {"text": message, "type": etype})
         lines.append("</UIMessages>")
 
         lines.append("</MaltegoTransformResponseMessage>")
