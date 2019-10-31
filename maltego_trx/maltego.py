@@ -47,8 +47,8 @@ UIM_TEMPLATE = "<UIMessage MessageType=\"%(type)s\">%(text)s</UIMessage>"
 
 
 class MaltegoEntity(object):
-    def __init__(self, etype=None, value=None):
-        self.entityType = etype if etype else Phrase
+    def __init__(self, etype=Phrase, value=None):
+        self.entityType = etype
         self.value = value if value else ""
 
         self.weight = 100
