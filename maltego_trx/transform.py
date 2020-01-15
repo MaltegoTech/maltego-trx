@@ -8,6 +8,5 @@ class DiscoverableTransform:
 
     @classmethod
     def run_transform(cls, request):
-        response = MaltegoTransform()
-        cls.create_entities(request, response)
+        response = cls.create_entities(request, MaltegoTransform())
         return response.returnOutput()
