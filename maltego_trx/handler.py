@@ -15,7 +15,7 @@ def handle_run(name, args, app):
             if command == "runserver":
                 print("\n=== Maltego Transform Server: v%s ===\n" % VERSION)
                 print_transforms()
-                app.run(host="0.0.0.0", port=8080, debug=True)
+                app.run(host="0.0.0.0", port=8080, debug=False)
             elif command == "list":
                 print_transforms()
             elif command == "local" and len(args) > 3:
