@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 URL_TEMPLATE = '/run/<transform_name>/'
+URL_TEMPLATE_NO_SLASH = '/run/<transform_name>'
 
 
 def get_exception_message(msg="An exception occurred with the transform. Check the logs for more details."):
@@ -53,7 +54,7 @@ def run_transform(transform_name, client_msg):
 app = Flask(__name__)
 application = app  # application variable for usage with apache mod wsgi
 
-@app.route(URL_TEMPLATE, methods=['GET', 'POST'])
+
 def transform_runner(transform_name):
     transform_name = transform_name.lower()
     if transform_name in mapping:
@@ -66,6 +67,11 @@ def transform_runner(transform_name):
         log.info("No transform found with the name '%s'." % transform_name)
         log.info("Available transforms are:\n %s" % str(list(mapping.keys())))
         return "No transform found with the name '%s'." % transform_name, 404
+
+
+# Add the route with and without the slash, since POSTs can't be redirected
+app.route(URL_TEMPLATE_NO_SLASH, methods=['GET', 'POST'])(transform_runner)
+app.route(URL_TEMPLATE, methods=['GET', 'POST'])(transform_runner)
 
 
 @app.route('/', methods=['GET', 'POST'])
