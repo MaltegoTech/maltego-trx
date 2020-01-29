@@ -195,7 +195,7 @@ The request/maltego msg object given to the transform contains the information a
 
 **Methods:**
  - `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object created by the method.
- - `addUIMessage(msg: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message type constant.
+ - `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message type constant.
  
 ### Entity
 
