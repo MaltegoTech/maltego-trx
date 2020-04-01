@@ -221,6 +221,17 @@ class MaltegoMsg:
             self.Value = self._get_text(entity.getElementsByTagName("Value")[0])
             self.Type = entity.attributes["Type"].value
 
+            Genealogy = set()
+            try:
+                Gn = maltego_msg.getElementsByTagName("Genealogy")[0]
+                Names = Gn.getElementsByTagName("Type")
+                for node in Names:
+                    Genealogy.add(node.attributes["Name"].value)
+            except:
+                pass 
+
+            self.Genealogy = Genealogy
+
             self.Weight = self._get_int(entity, "Weight")
             self.Slider = self._get_int(maltego_msg, "Limits", attr_name="SoftLimit")
 
