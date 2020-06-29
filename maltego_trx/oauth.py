@@ -98,10 +98,10 @@ class MaltegoOauth:
             }
         elif len(encrypted_fields) == 5:
             aes_key = cls._rsa_decrypt(private_key_path, encrypted_fields[4])
-            token = cls._rsa_decrypt(private_key_path, encrypted_fields[0])
-            token_secret = cls._rsa_decrypt(private_key_path, encrypted_fields[1])
-            refresh_token = cls._rsa_decrypt(private_key_path, encrypted_fields[2])
-            expires_in = cls._rsa_decrypt(private_key_path, encrypted_fields[3])
+            token = cls._aes_decrypt(aes_key, encrypted_fields[0])
+            token_secret = cls._aes_decrypt(aes_key, encrypted_fields[1])
+            refresh_token = cls._aes_decrypt(aes_key, encrypted_fields[2])
+            expires_in = cls._aes_decrypt(aes_key, encrypted_fields[3])
             token_fields = {
                 "token": token,
                 "token_secret": token_secret,
