@@ -30,7 +30,7 @@ class MaltegoOauth:
         ciphertext = base64.b64decode(ciphertext)
         private_key = RSA.import_key(open(private_key_path).read())
         cipher = PKCS1_v1_5.new(private_key)
-        plaintext = cipher.decrypt(ciphertext, sentinel)
+        plaintext = cipher.decrypt(ciphertext, sentinel).decode('utf8')
         return plaintext
 
     @staticmethod
