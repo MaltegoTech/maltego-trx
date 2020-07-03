@@ -10,7 +10,8 @@ setup(name='maltego-trx',
       license='MIT',
       install_requires=[
        'flask>=1',
-       'six>=1'
+       'six>=1',
+       'pycryptodome>=3.9.7'
       ],
       packages=[
           'maltego_trx',
