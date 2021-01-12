@@ -93,6 +93,9 @@ class MaltegoEntity(object):
 
     def reverseLink(self):
         self.addProperty('link#maltego.link.direction', 'link#maltego.link.direction', 'loose', 'output-to-input')
+        
+    def addCustomLinkProperty(self, fieldName=None, displayName=None, value=None):
+        self.addProperty('link#' + fieldName, displayName, '', value)
 
     def setBookmark(self, bookmark):
         self.addProperty('bookmark#', 'Bookmark', '', bookmark)
