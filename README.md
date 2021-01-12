@@ -246,3 +246,4 @@ The request/maltego msg object given to the transform contains the information a
 - `setLinkThickness(thick: int)`: Set link thickness (default is 1)
 - `setLinkLabel(label: str)`: Set the label of the link
 - `reverseLink()`: Reverse the link direction
+- `addCustomLinkProperty(fieldname=None, displayName=None, value=None)`: Set a custom property for the link
