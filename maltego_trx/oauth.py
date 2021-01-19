@@ -22,7 +22,7 @@ class MaltegoOauth:
     """
 
     @staticmethod
-    def _rsa_decrypt(private_key_path=None, ciphertext=None):
+    def _rsa_decrypt(private_key_path=None, ciphertext=None, password=None):
         """
         RSA Decryption function, returns decrypted plaintext in b64 encoding
         """
@@ -30,7 +30,7 @@ class MaltegoOauth:
 
         with open(private_key_path, "rb") as key_file:
             private_key = serialization.load_pem_private_key(key_file.read(),
-                                                             password=None,
+                                                             password,
                                                              backend=None)
             plaintext = private_key.decrypt(ciphertext, padding.PKCS1v15())
 
