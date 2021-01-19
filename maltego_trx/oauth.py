@@ -2,8 +2,8 @@
 import base64
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import serialization, padding as primitives_padding
+from cryptography.hazmat.primitives.asymmetric import padding as asymmetric_padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from requests.auth import AuthBase
 
@@ -32,7 +32,7 @@ class MaltegoOauth:
             private_key = serialization.load_pem_private_key(key_file.read(),
                                                              password,
                                                              backend=None)
-            plaintext = private_key.decrypt(ciphertext, padding.PKCS1v15())
+            plaintext = private_key.decrypt(ciphertext, asymmetric_padding.PKCS1v15())
 
         return plaintext
 
@@ -46,9 +46,8 @@ class MaltegoOauth:
         decryptor = cipher.decryptor();
         ciphertext = base64.b64decode(ciphertext)
         padded_b64_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
-
-        unpad = lambda data: data[:-ord(data[len(data) - 1:])]
-        plaintext = unpad(padded_b64_plaintext).decode('utf8')
+        unpadder = primitives_padding.PKCS7(128).unpadder()
+        plaintext = (unpadder.update(padded_b64_plaintext) + unpadder.finalize()).decode('utf8')
         return plaintext
 
     @classmethod
