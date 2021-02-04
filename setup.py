@@ -11,7 +11,7 @@ setup(name='maltego-trx',
       install_requires=[
        'flask>=1',
        'six>=1',
-       'pycryptodome>=3.9.7'
+       'cryptography>=3.3.1'
       ],
       packages=[
           'maltego_trx',

@@ -1,9 +1,10 @@
 """Maltego OAuth Crypto Helper"""
 import base64
-from Crypto import Random
-from Crypto.Cipher import PKCS1_v1_5, AES
-from Crypto.Hash import SHA
-from Crypto.PublicKey import RSA
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization, padding as primitives_padding
+from cryptography.hazmat.primitives.asymmetric import padding as asymmetric_padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from requests.auth import AuthBase
 
 
@@ -16,21 +17,23 @@ class MaltegoOauth:
     3. Refresh Token
     4. Expires In
 
-    Contains 1 Methods:
+    Contains Methods:
         1. decrypt_secrets(private_key_path="pem file", ciphertext="request.getTransformSetting('name from TDS')")
     """
 
     @staticmethod
-    def _rsa_decrypt(private_key_path=None, ciphertext=None):
+    def _rsa_decrypt(private_key_path=None, ciphertext=None, password=None):
         """
         RSA Decryption function, returns decrypted plaintext in b64 encoding
         """
-        dsize = SHA.digest_size
-        sentinel = Random.new().read(20 + dsize)
         ciphertext = base64.b64decode(ciphertext)
-        private_key = RSA.import_key(open(private_key_path).read())
-        cipher = PKCS1_v1_5.new(private_key)
-        plaintext = cipher.decrypt(ciphertext, sentinel).decode('utf8')
+
+        with open(private_key_path, "rb") as key_file:
+            private_key = serialization.load_pem_private_key(key_file.read(),
+                                                             password,
+                                                             backend=None)
+            plaintext = private_key.decrypt(ciphertext, asymmetric_padding.PKCS1v15())
+
         return plaintext
 
     @staticmethod
@@ -38,11 +41,13 @@ class MaltegoOauth:
         """
         AES Decryption function, returns decrypted plaintext value
         """
-        unpad = lambda s: s[:-ord(s[len(s) - 1:])]
         key = base64.b64decode(key)
+        cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
+        decryptor = cipher.decryptor();
         ciphertext = base64.b64decode(ciphertext)
-        cipher = AES.new(key, AES.MODE_ECB)
-        plaintext = unpad(cipher.decrypt(ciphertext)).decode('utf8')
+        padded_b64_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+        unpadder = primitives_padding.PKCS7(128).unpadder()
+        plaintext = (unpadder.update(padded_b64_plaintext) + unpadder.finalize()).decode('utf8')
         return plaintext
 
     @classmethod
