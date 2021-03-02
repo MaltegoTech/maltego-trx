@@ -1,0 +1,18 @@
+<MaltegoMessage>
+    <MaltegoTransformRequestMessage>
+        <Entities>
+            <Entity Type="Domain">
+                <Genealogy>
+                    <Type Name="maltego.Domain" OldName="Domain"/>
+                </Genealogy>
+                <AdditionalFields>
+                    <Field Name="fqdn" DisplayName="Domain Name">paterva.com</Field>
+                    <Field Name="whois" DisplayName="Whois">whois-info found</Field>
+                </AdditionalFields>
+                <Value>paterva.com</Value>
+                <Weight>0</Weight>
+            </Entity>
+        </Entities>
+        <Limits SoftLimit="12" HardLimit="12"/>
+    </MaltegoTransformRequestMessage>
+</MaltegoMessage>
