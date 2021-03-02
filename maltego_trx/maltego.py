@@ -1,7 +1,9 @@
 import uuid;
+
 from xml.dom import minidom
 
-from .entities import Phrase
+from .entities import Phrase, translate_legacy_properties
+from .overlays import Position, OverlayType
 from .utils import remove_invalid_xml_chars
 
 BOOKMARK_COLOR_NONE = "-1"
@@ -44,7 +46,7 @@ UIM_TYPES = {
 ADD_FIELD_TEMPLATE = "<Field MatchingRule=\"%(matching)s\" Name=\"%(name)s\" DisplayName=\"%(display)s\"><![CDATA[%(value)s]]></Field>"
 DISP_INFO_TEMPLATE = "<Label Name=\"%(name)s\" Type=\"text/html\"><![CDATA[' %(content)s ']]></Label>"
 UIM_TEMPLATE = "<UIMessage MessageType=\"%(type)s\">%(text)s</UIMessage>"
-
+OVERLAY_TEMPLATE = "<Overlay position=\"%(position)s\" propertyName=\"%(property_name)s\" type=\"%(type)s\"/>"
 
 class MaltegoEntity(object):
     def __init__(self, type=None, value=None):
@@ -55,6 +57,7 @@ class MaltegoEntity(object):
         self.additionalFields = []
         self.displayInformation = []
         self.iconURL = ""
+        self.overlays = []
 
     def setType(self, type=None):
         if type:
@@ -93,7 +96,7 @@ class MaltegoEntity(object):
 
     def reverseLink(self):
         self.addProperty('link#maltego.link.direction', 'link#maltego.link.direction', 'loose', 'output-to-input')
-        
+
     def addCustomLinkProperty(self, fieldName=None, displayName=None, value=None):
         self.addProperty('link#' + fieldName, displayName, '', value)
 
@@ -102,6 +105,9 @@ class MaltegoEntity(object):
 
     def setNote(self, note):
         self.addProperty('notes#', 'Notes', '', note)
+
+    def addOverlay(self, property_name=None, position=Position, overlay_type=OverlayType):
+        self.overlays.append([property_name, position.value, overlay_type.value])
 
     def add_field_to_xml(self, additional_field):
         name, display, matching, value = additional_field
@@ -139,6 +145,16 @@ class MaltegoEntity(object):
                 lines.append(self.add_field_to_xml(additional_field))
             lines.append("</AdditionalFields>")
 
+        if self.overlays:
+            lines.append("<Overlays>")
+            for overlay in self.overlays:
+                overlay_tag = OVERLAY_TEMPLATE % {
+                    "property_name": overlay[0],
+                    "position": overlay[1],
+                    "type": overlay[2],
+                }
+                lines.append(overlay_tag)
+            lines.append("</Overlays>")
         if self.iconURL:
             lines.append("<IconURL>%s</IconURL>" % self.iconURL)
 
@@ -226,6 +242,17 @@ class MaltegoMsg:
 
             self.Weight = self._get_int(entity, "Weight")
             self.Slider = self._get_int(maltego_msg, "Limits", attr_name="SoftLimit")
+            self._entity_types = []
+            self.Genealogy = []
+            genealogy_tag = maltego_msg.getElementsByTagName("Genealogy")
+            genealogy_types = genealogy_tag[0].getElementsByTagName("Type") if genealogy_tag else []
+            for genealogy_type_tag in genealogy_types:
+                entity_type_name = genealogy_type_tag.getAttribute("Name")
+                entity_type_old_name = genealogy_type_tag.getAttribute("OldName")
+                entity_type = {"Name": entity_type_name,
+                               "OldName": entity_type_old_name if entity_type_old_name else None}
+                self._entity_types.append(entity_type_name)
+                self.Genealogy.append(entity_type)
 
             # Additional Fields
             self.Properties = {}
@@ -235,6 +262,10 @@ class MaltegoMsg:
                 name = field.getAttribute("Name")
                 value = self._get_text(field)
                 self.Properties[name] = value
+                for entity_type in self._entity_types:
+                    v3_property = translate_legacy_properties(entity_type, name)
+                    if v3_property:
+                        self.Properties[v3_property] = value
 
             # Transform Settings
             self.TransformSettings = {}
