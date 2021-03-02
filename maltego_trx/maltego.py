@@ -2,7 +2,7 @@ import uuid;
 
 from xml.dom import minidom
 
-from .entities import Phrase, translate_legacy_properties
+from .entities import Phrase, translate_legacy_property_name, entity_property_map
 from .overlays import Position, OverlayType
 from .utils import remove_invalid_xml_chars
 
@@ -47,6 +47,7 @@ ADD_FIELD_TEMPLATE = "<Field MatchingRule=\"%(matching)s\" Name=\"%(name)s\" Dis
 DISP_INFO_TEMPLATE = "<Label Name=\"%(name)s\" Type=\"text/html\"><![CDATA[' %(content)s ']]></Label>"
 UIM_TEMPLATE = "<UIMessage MessageType=\"%(type)s\">%(text)s</UIMessage>"
 OVERLAY_TEMPLATE = "<Overlay position=\"%(position)s\" propertyName=\"%(property_name)s\" type=\"%(type)s\"/>"
+
 
 class MaltegoEntity(object):
     def __init__(self, type=None, value=None):
@@ -242,7 +243,6 @@ class MaltegoMsg:
 
             self.Weight = self._get_int(entity, "Weight")
             self.Slider = self._get_int(maltego_msg, "Limits", attr_name="SoftLimit")
-            self._entity_types = []
             self.Genealogy = []
             genealogy_tag = maltego_msg.getElementsByTagName("Genealogy")
             genealogy_types = genealogy_tag[0].getElementsByTagName("Type") if genealogy_tag else []
@@ -251,7 +251,6 @@ class MaltegoMsg:
                 entity_type_old_name = genealogy_type_tag.getAttribute("OldName")
                 entity_type = {"Name": entity_type_name,
                                "OldName": entity_type_old_name if entity_type_old_name else None}
-                self._entity_types.append(entity_type_name)
                 self.Genealogy.append(entity_type)
 
             # Additional Fields
@@ -262,10 +261,10 @@ class MaltegoMsg:
                 name = field.getAttribute("Name")
                 value = self._get_text(field)
                 self.Properties[name] = value
-                for entity_type in self._entity_types:
-                    v3_property = translate_legacy_properties(entity_type, name)
-                    if v3_property:
-                        self.Properties[v3_property] = value
+                for entity_type in self.Genealogy:
+                    v3_property_name = translate_legacy_property_name(entity_type["Name"], name)
+                    if v3_property_name is not None:
+                        self.Properties[v3_property_name] = value
 
             # Transform Settings
             self.TransformSettings = {}
@@ -278,6 +277,7 @@ class MaltegoMsg:
         elif LocalArgs:
             self.Value = LocalArgs[0]
             self.Type = "local.Unknown"
+            self.Genealogy = None
 
             self.Weight = 100
             self.Slider = 100
@@ -293,6 +293,16 @@ class MaltegoMsg:
 
                 self.buildProperties(text.split("#"), hash_rnd, equals_rnd, bslash_rnd)
                 self.TransformSettings = {}
+
+    def clearLegacyProperties(self):
+        to_clear = set()
+        for entity_type in self.Genealogy or []:
+            for prop_name in entity_property_map.get(entity_type["Name"], []):
+                to_clear.add(prop_name)
+
+        for field_name in to_clear:
+            if field_name in self.Properties:
+                del self.Properties[field_name]
 
     def buildProperties(self, key_value_array, hash_rnd, equals_rnd, bslash_rnd):
         self.Properties = {}
