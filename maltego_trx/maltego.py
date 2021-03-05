@@ -3,7 +3,7 @@ import uuid;
 from xml.dom import minidom
 
 from .entities import Phrase, translate_legacy_property_name, entity_property_map
-from .overlays import Position, OverlayType
+from .overlays import OverlayPosition, OverlayType
 from .utils import remove_invalid_xml_chars
 
 BOOKMARK_COLOR_NONE = "-1"
@@ -107,8 +107,10 @@ class MaltegoEntity(object):
     def setNote(self, note):
         self.addProperty('notes#', 'Notes', '', note)
 
-    def addOverlay(self, property_name=None, position=Position, overlay_type=OverlayType):
-        self.overlays.append([property_name, position.value, overlay_type.value])
+    def addOverlay(
+            self, propertyName, position: OverlayPosition, overlayType: OverlayType
+    ):
+        self.overlays.append([propertyName, position.value, overlayType.value])
 
     def add_field_to_xml(self, additional_field):
         name, display, matching, value = additional_field

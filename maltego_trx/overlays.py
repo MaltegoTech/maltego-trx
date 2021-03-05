@@ -1,16 +1,13 @@
 from enum import Enum
 
 
-class Position(Enum):
+class OverlayPosition(Enum):
     NORTH = "N"
-    NORTH_EAST = "NE"
-    NORTH_WEST = "NW"
-    EAST = "E"
-    CENTER = "C"
-    WEST = "W"
     SOUTH = "S"
-    SOUTH_EAST = "SE"
+    WEST = "W"
+    NORTH_WEST = "NW"
     SOUTH_WEST = "SW"
+    CENTER = "C"
 
 
 class OverlayType(Enum):
