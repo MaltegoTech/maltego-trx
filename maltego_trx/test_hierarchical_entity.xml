@@ -1,0 +1,13 @@
+<Entity Type="DNSName">
+    <Genealogy>
+        <Type Name="maltego.Website" OldName="Website"/>
+        <Type Name="maltego.DNSName" OldName="DNSName"/>
+    </Genealogy>
+    <AdditionalFields>
+        <Field Name="fqdn" DisplayName="Website">www.paterva.com</Field>
+        <Field Name="website.ssl-enabled" DisplayName="SSL Enabled">false</Field>
+        <Field Name="ports" DisplayName="Ports">80</Field>
+    </AdditionalFields>
+    <Value>www.paterva.com</Value>
+    <Weight>0</Weight>
+</Entity>
