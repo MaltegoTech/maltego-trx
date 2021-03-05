@@ -18,6 +18,9 @@ maltego-trx start new_project
 
 This will create a folder new_project with the recommend project structure.
 
+Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. 
+These also include Dockerfile and corresponding docker-compose configuration files for production deployment.
+
 **Adding a Transform:**
 
 Add a new transform by creating a new python file in the "transforms" folder of your directory.
@@ -207,16 +210,13 @@ The following constants can be imported from `maltego_trx.maltego`.
 
 Overlays Enums are imported from `maltego_trx.overlays`
 
-*Overlay Position:*
+*Overlay OverlayPosition:*
 - `NORTH = "N"`
-- `NORTH_EAST = "NE"`
-- `NORTH_WEST = "NW"`
-- `EAST = "E"`
-- `CENTER = "C"`
-- `WEST = "W"`
 - `SOUTH = "S"`
-- `SOUTH_EAST = "SE"`
+- `WEST = "W"`
+- `NORTH_WEST = "NW"`
 - `SOUTH_WEST = "SW"`
+- `CENTER = "C"`
 
 *Overlay Type*
 - `IMAGE = "image"`
@@ -240,15 +240,23 @@ The request/maltego msg object given to the transform contains the information a
 
 **Methods:**
 
-- `getProperty(name: str)`: get a property value of the input entity
-- `getTransformSetting(name: str)`: get a transform setting value
+- `getProperty(name: str)`: Get a property value of the input entity
+- `getTransformSetting(name: str)`: Get a transform setting value
+- `clearLegacyProperties()`: Delete (duplicate) legacy properties from the input entity. This will not result in 
+property information being lost, it will simply clear out some properties that the TRX library duplicates on all 
+incoming Transform requests. In older versions of TRX, these Entity properties would have a different internal ID when 
+sent the server than what the Maltego client would advertise in the Entity Manager UI. For a list of Entities with such 
+properties and their corresponding legacy and actual IDs, see `entity_property_map` in `maltego_trx/entities.py`. For 
+the majority of projects this distinction can be safely ignored.  
 
 ### Response/MaltegoTransform
 
 **Methods:**
 
-- `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object created by the method.
-- `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message type constant.
+- `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object 
+created by the method.
+- `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message 
+type constant.
 
 ### Entity
 
@@ -258,27 +266,45 @@ The request/maltego msg object given to the transform contains the information a
 - `setValue(value: str)`: Set the entity value
 - `setWeight(weight: int)`: Set the entity weight
 - `addDisplayInformation(content: str, title: str)`: Add display information for the entity.
-- `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. Matching rule can be `strict` or `loose`.
-- `addOverlay(property_name: str, position:Position, overlay_type:OverlayType)`: Add an overlay to the entity. `Position` and `Type` are defined in the `maltego_tx.overlays`
+- `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. 
+Matching rule can be `strict` or `loose`.
+- `addOverlay(propertyName: str, position: OverlayPosition, overlay_type: OverlayType)`: Add an overlay to the entity. 
+`OverlayPosition` and `OverlayType` are defined in the `maltego_tx.overlays`
 
 Overlay can be added as Text, Image or Color
 
 ```python 
         
-        # references the icon name `Champion` from the Maltego Desktop Client and this is will show up as an overlay on the graph
-        entity.addOverlay('Champion', Position.EAST, OverlayType.IMAGE)
+        person_name = request.Value
+        entity = response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
 
-        # add a dynamic property 
-        entity.addProperty("exampleDynamicPropertyName", "Example Dynamic Property", "loose", "Maltego Champion")
+        # Normally, when we create an overlay, we would reference a property name so that Maltego can then use the
+        # value of that property to create the overlay. Sometimes that means creating a dynamic property, but usually
+        # it's better to either use an existing property, or, if you created the Entity yourself, and only need the
+        # property for the overlay, to use a hidden property. Here's an example of using a dynamic property:
+        entity.addProperty(
+            'dynamic_overlay_icon_name', 
+            displayName="Name for overlay image", 
+            value="Champion"  # references an icon in the Maltego client
+        )
+        entity.addOverlay('dynamic_overlay_icon_name', OverlayPosition.WEST, OverlayType.IMAGE)
 
-        # add the text value of the property `exampleDynamicPropertyName` as an overlay, any existing property name will work
-        entity.addOverlay('exampleDynamicPropertyName', Position.NORTH, OverlayType.TEXT)
+        # DISCOURAGED:
+        # You *can* also directly supply the string value of the property, however this is not recommended. Why? If
+        # the entity already has a property of the same ID (in this case, "DE"), then you would in fact be assigning the
+        # value of that property, not the string "DE", which is not the intention. Nevertheless, here's an example:
+        entity.addOverlay(
+            'DE', # name of an icon, however, could also accidentally be a property name
+            OverlayPosition.SOUTH_WEST, 
+            OverlayType.IMAGE
+        )
 
-        # add a color overlay
-        entity.addOverlay('#45e06f', Position.NORTH_WEST, OverlayType.COLOUR)
+        # Overlays can also be used to display extra text on an entity:
+        entity.addProperty("exampleDynamicPropertyName", "Example Dynamic Property", "loose", "Maltego Overlay Testing")
+        entity.addOverlay('exampleDynamicPropertyName', OverlayPosition.NORTH, OverlayType.TEXT)
 
-        # add a flag overlay - DE is an icon on the Maltego Desktop Client
-        entity.addOverlay('DE', Position.SOUTH_WEST, OverlayType.IMAGE)
+        # Or a small color indicator:
+        entity.addOverlay('#45e06f', OverlayPosition.NORTH_WEST, OverlayType.COLOUR)
 ```
 
 - `setIconURL(url: str)`: Set the entity icon URL
