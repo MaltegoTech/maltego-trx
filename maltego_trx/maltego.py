@@ -189,7 +189,7 @@ class MaltegoTransform(object):
         lines.append("<Exceptions>")
 
         for exception in self.exceptions:
-            lines.append("<Exception>%s</Exceptions>" % remove_invalid_xml_chars(exception))
+            lines.append("<Exception>%s</Exception>" % remove_invalid_xml_chars(exception))
 
         lines.append("</Exceptions>")
         lines.append("</MaltegoTransformExceptionMessage>")
