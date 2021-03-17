@@ -1,6 +1,7 @@
 import uuid;
 
 from xml.dom import minidom
+from xml.sax.saxutils import escape
 
 from .entities import Phrase, translate_legacy_property_name, entity_property_map
 from .overlays import OverlayPosition, OverlayType
@@ -208,7 +209,7 @@ class MaltegoTransform(object):
 
         lines.append("<UIMessages>")
         for message in self.UIMessages:
-            type, message = message
+            type, message = escape(message)
             lines.append(UIM_TEMPLATE % {"text": message, "type": type})
         lines.append("</UIMessages>")
 
