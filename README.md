@@ -188,6 +188,9 @@ The following constants can be imported from `maltego_trx.maltego`.
 - `UIM_INFORM`
 - `UIM_DEBUG`
 
+**Please take note:**
+You need to enable the `debug` filter option in the Desktop client Output window to view `debug` transform messages.
+
 **Bookmark Colors:**
 
 - `BOOKMARK_COLOR_NONE`
