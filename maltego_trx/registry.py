@@ -24,7 +24,7 @@ class TransformMeta:
 @dataclass()
 class TransformSetting:
     name: str
-    setting_type: Literal['string', 'int', 'boolean', 'datetime']
+    setting_type: Literal['string', 'boolean', 'date', 'datetime', 'daterange', 'url', 'double', 'int']
     display_name: str
     default_value: Optional[str] = None
     optional: bool = False
