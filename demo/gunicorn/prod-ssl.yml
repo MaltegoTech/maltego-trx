@@ -4,4 +4,4 @@ services:
     build: .
     command: "gunicorn --certfile=server.crt --keyfile=server.key --bind=0.0.0.0:8443 --threads=25 --workers=2 project:app"
     ports:
-       - "8443:8443"
+      - "8443:8443"

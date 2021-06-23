@@ -1,15 +1,18 @@
 from maltego_trx.entities import Phrase
+from maltego_trx.maltego import CleanMaltegoEntity
+from maltego_trx.server import registry
 
 from maltego_trx.transform import DiscoverableTransform
 
 
+@registry.register(display_name="Greet Person", input_entity=Phrase, description="Greets a Person by the provided Name")
 class GreetPerson(DiscoverableTransform):
     """
-    Returns a phrase greeting a person on the graph.
+    returns a phrase greeting a person on the graph.
     """
 
     @classmethod
     def create_entities(cls, request, response):
-        person_name = request.Value
+        person_name = request.value
 
-        response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
+        response.entities.append(CleanMaltegoEntity('Phrase', f"Hi {person_name}, nice to meet you!"))

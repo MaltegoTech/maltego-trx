@@ -18,14 +18,15 @@ maltego-trx start new_project
 
 This will create a folder new_project with the recommend project structure.
 
-Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. 
-These also include Dockerfile and corresponding docker-compose configuration files for production deployment.
+Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. These also
+include Dockerfile and corresponding docker-compose configuration files for production deployment.
 
 **Adding a Transform:**
 
 Add a new transform by creating a new python file in the "transforms" folder of your directory.
 
-Any file in the folder where the **class name matches the filename** and the class inherits from Transform, will automatically be discovered and added to your server.
+Any file in the folder where the **class name matches the filename** and the class inherits from Transform, will
+automatically be discovered and added to your server.
 
 A simple transform would look like the following:
 
@@ -72,11 +73,13 @@ gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app
 
 ## Run a Docker Transform server
 
-The `demo` folder provides an example project. The Docker files given can be used to setup and run your project in Docker.
+The `demo` folder provides an example project. The Docker files given can be used to setup and run your project in
+Docker.
 
 The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
 
-If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the following commands to run the server in Docker.
+If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the
+following commands to run the server in Docker.
 
 Run the following to start the development server:
 
@@ -119,8 +122,8 @@ The following values are not passed to local transforms, and will have dummy val
 
 [Documentation](https://docs.maltego.com/support/solutions/articles/15000018299-porting-old-trx-transforms-to-the-latest-version)
 
-If you have old TRX transforms that are written as functions,
-they can be registered with the server using the `maltego_trx.registry.register_transform_function` method.
+If you have old TRX transforms that are written as functions, they can be registered with the server using
+the `maltego_trx.registry.register_transform_function` method.
 
 In order to port your old transforms, make two changes:
 
@@ -141,7 +144,8 @@ To:
 
 ```python
 
-from maltego_trx.maltego import MaltegoTransform
+from maltego_trx.legacy import MaltegoTransform
+
 
 def old_transform(m):
 ```
@@ -149,7 +153,7 @@ def old_transform(m):
 In the `project.py` file add the following:
 
 ```python
-from maltego_trx.registry import register_transform_function
+from maltego_trx.legacy_registry import register_transform_function
 from legacy_transform import trx_DNS2IP
 
 register_transform_function(trx_DNS2IP)
@@ -214,6 +218,7 @@ You need to enable the `debug` filter option in the Desktop client Output window
 Overlays Enums are imported from `maltego_trx.overlays`
 
 *Overlay OverlayPosition:*
+
 - `NORTH = "N"`
 - `SOUTH = "S"`
 - `WEST = "W"`
@@ -222,6 +227,7 @@ Overlays Enums are imported from `maltego_trx.overlays`
 - `CENTER = "C"`
 
 *Overlay Type*
+
 - `IMAGE = "image"`
 - `COLOUR = "colour"`
 - `TEXT = "text"`
@@ -238,28 +244,28 @@ The request/maltego msg object given to the transform contains the information a
 - `Type: str`: The input entity type
 - `Properties: dict(str: str)`: A key-value dictionary of the input entity properties
 - `TransformSettings: dict(str: str)`: A key-value dictionary of the transform settings
-- `Genealogy: list(dict(str: str))`: A key-value dictionary of the Entity genealogy, 
-    this is only applicable for extended entities e.g. Website Entity
+- `Genealogy: list(dict(str: str))`: A key-value dictionary of the Entity genealogy, this is only applicable for
+  extended entities e.g. Website Entity
 
 **Methods:**
 
 - `getProperty(name: str)`: Get a property value of the input entity
 - `getTransformSetting(name: str)`: Get a transform setting value
-- `clearLegacyProperties()`: Delete (duplicate) legacy properties from the input entity. This will not result in 
-property information being lost, it will simply clear out some properties that the TRX library duplicates on all 
-incoming Transform requests. In older versions of TRX, these Entity properties would have a different internal ID when 
-sent the server than what the Maltego client would advertise in the Entity Manager UI. For a list of Entities with such 
-properties and their corresponding legacy and actual IDs, see `entity_property_map` in `maltego_trx/entities.py`. For 
-the majority of projects this distinction can be safely ignored.  
+- `clearLegacyProperties()`: Delete (duplicate) legacy properties from the input entity. This will not result in
+  property information being lost, it will simply clear out some properties that the TRX library duplicates on all
+  incoming Transform requests. In older versions of TRX, these Entity properties would have a different internal ID when
+  sent the server than what the Maltego client would advertise in the Entity Manager UI. For a list of Entities with
+  such properties and their corresponding legacy and actual IDs, see `entity_property_map` in `maltego_trx/entities.py`.
+  For the majority of projects this distinction can be safely ignored.
 
 ### Response/MaltegoTransform
 
 **Methods:**
 
-- `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object 
-created by the method.
-- `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message 
-type constant.
+- `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object
+  created by the method.
+- `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message
+  type constant.
 
 ### Entity
 
@@ -269,10 +275,10 @@ type constant.
 - `setValue(value: str)`: Set the entity value
 - `setWeight(weight: int)`: Set the entity weight
 - `addDisplayInformation(content: str, title: str)`: Add display information for the entity.
-- `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. 
-Matching rule can be `strict` or `loose`.
-- `addOverlay(propertyName: str, position: OverlayPosition, overlay_type: OverlayType)`: Add an overlay to the entity. 
-`OverlayPosition` and `OverlayType` are defined in the `maltego_tx.overlays`
+- `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. Matching
+  rule can be `strict` or `loose`.
+- `addOverlay(propertyName: str, position: OverlayPosition, overlay_type: OverlayType)`: Add an overlay to the entity.
+  `OverlayPosition` and `OverlayType` are defined in the `maltego_tx.overlays`
 
 Overlay can be added as Text, Image or Color
 

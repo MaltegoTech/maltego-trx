@@ -1,4 +1,4 @@
-from maltego_trx.registry import register_transform_classes
+from maltego_trx.legacy_registry import register_transform_classes
 from maltego_trx.server import app
 from tests import transforms
 

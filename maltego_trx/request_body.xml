@@ -1,17 +1,17 @@
 <MaltegoMessage>
-   <MaltegoTransformRequestMessage>
-      <Entities>
-         <Entity Type="Domain">
-            <AdditionalFields>
-               <Field Name="fqdn" DisplayName="Domain Name">baidu.com</Field>
-            </AdditionalFields>
-            <Value>baidu.com</Value>
-            <Weight>87</Weight>
-         </Entity>
-      </Entities>
-      <TransformFields>
-         <Field Name="testDepth">4</Field>
-      </TransformFields>
-      <Limits SoftLimit="12" HardLimit="12"/>
-   </MaltegoTransformRequestMessage>
+    <MaltegoTransformRequestMessage>
+        <Entities>
+            <Entity Type="Domain">
+                <AdditionalFields>
+                    <Field Name="fqdn" DisplayName="Domain Name">baidu.com</Field>
+                </AdditionalFields>
+                <Value>baidu.com</Value>
+                <Weight>87</Weight>
+            </Entity>
+        </Entities>
+        <TransformFields>
+            <Field Name="testDepth">4</Field>
+        </TransformFields>
+        <Limits SoftLimit="12" HardLimit="12"/>
+    </MaltegoTransformRequestMessage>
 </MaltegoMessage>

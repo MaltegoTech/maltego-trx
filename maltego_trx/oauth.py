@@ -43,7 +43,7 @@ class MaltegoOauth:
         """
         key = base64.b64decode(key)
         cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
-        decryptor = cipher.decryptor();
+        decryptor = cipher.decryptor()
         ciphertext = base64.b64decode(ciphertext)
         padded_b64_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
         unpadder = primitives_padding.PKCS7(128).unpadder()
@@ -71,15 +71,15 @@ class MaltegoOauth:
         if len(encrypted_fields) == 1:
             token = cls._rsa_decrypt(private_key_path, encrypted_fields[0])
             token_fields = {
-                "token": token
+                    "token": token
             }
 
         elif len(encrypted_fields) == 2:
             token = cls._rsa_decrypt(private_key_path, encrypted_fields[0])
             token_secret = cls._rsa_decrypt(private_key_path, encrypted_fields[1])
             token_fields = {
-                "token": token,
-                "token_secret": token_secret
+                    "token":        token,
+                    "token_secret": token_secret
             }
 
         elif len(encrypted_fields) == 3:
@@ -87,8 +87,8 @@ class MaltegoOauth:
             token = cls._aes_decrypt(aes_key, encrypted_fields[0])
             token_secret = cls._aes_decrypt(aes_key, encrypted_fields[1])
             token_fields = {
-                "token": token,
-                "token_secret": token_secret
+                    "token":        token,
+                    "token_secret": token_secret
             }
         elif len(encrypted_fields) == 4:
             token = cls._rsa_decrypt(private_key_path, encrypted_fields[0])
@@ -96,10 +96,10 @@ class MaltegoOauth:
             refresh_token = cls._rsa_decrypt(private_key_path, encrypted_fields[2])
             expires_in = cls._rsa_decrypt(private_key_path, encrypted_fields[3])
             token_fields = {
-                "token": token,
-                "token_secret": token_secret,
-                "refresh_token": refresh_token,
-                "expires_in": expires_in
+                    "token":         token,
+                    "token_secret":  token_secret,
+                    "refresh_token": refresh_token,
+                    "expires_in":    expires_in
             }
         elif len(encrypted_fields) == 5:
             aes_key = cls._rsa_decrypt(private_key_path, encrypted_fields[4])
@@ -108,17 +108,17 @@ class MaltegoOauth:
             refresh_token = cls._aes_decrypt(aes_key, encrypted_fields[2])
             expires_in = cls._aes_decrypt(aes_key, encrypted_fields[3])
             token_fields = {
-                "token": token,
-                "token_secret": token_secret,
-                "refresh_token": refresh_token,
-                "expires_in": expires_in
+                    "token":         token,
+                    "token_secret":  token_secret,
+                    "refresh_token": refresh_token,
+                    "expires_in":    expires_in
             }
         else:
             token_fields = {
-                "token": "",
-                "token_secret": "",
-                "refresh_token": "",
-                "expires_in": ""
+                    "token":         "",
+                    "token_secret":  "",
+                    "refresh_token": "",
+                    "expires_in":    ""
             }
 
         return token_fields
@@ -156,6 +156,6 @@ class OAuth2BearerToken(AuthBase):
 
     def __call__(self, request):
         request.headers['Authorization'] = 'Bearer {}'.format(
-            self.access_token
+                self.access_token
         )
         return request

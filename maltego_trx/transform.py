@@ -1,13 +1,16 @@
-from maltego_trx.maltego import MaltegoTransform
+from abc import abstractmethod
+
+from maltego_trx.maltego import MaltegoRequest, MaltegoResponse
 
 
 class DiscoverableTransform:
     @classmethod
-    def create_entities(cls, request, response):
+    @abstractmethod
+    async def create_entities(cls, request: MaltegoRequest, response: MaltegoResponse):
         raise NotImplementedError("create_entities static method must be implemented in child class.")
 
     @classmethod
-    def run_transform(cls, request):
-        response = MaltegoTransform()
-        cls.create_entities(request, response)
-        return response.returnOutput()
+    async def run_transform(cls, request: MaltegoRequest):
+        response = MaltegoResponse()
+        await cls.create_entities(request, response)
+        return response.build_xml()

@@ -1,11 +1,20 @@
 import sys
+
 import transforms
-
-from maltego_trx.registry import register_transform_function, register_transform_classes
-from maltego_trx.server import app, application
 from maltego_trx.handler import handle_run
+from maltego_trx.server import app, registry
 
-# register_transform_function(transform_func)
-register_transform_classes(transforms)
+registry.author = 'John Doe'
+registry.owner = 'Maltego Technologies GmbH'
+registry.disclaimer = "This is a demo"
+registry.host_url = 'http://localhost:8080'
+registry.seed_ids = ['maltegotrx']
 
-handle_run(__name__, sys.argv, app)
+registry.scan_for_transforms(transforms)
+registry.write_transforms_config()
+registry.write_settings_config()
+
+if __name__ == '__main__':
+    handle_run(__name__, sys.argv + ['runserver'], app)
+else:
+    handle_run(__name__, sys.argv, app)

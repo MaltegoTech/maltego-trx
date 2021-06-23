@@ -1,4 +1,4 @@
-from maltego_trx.entities import Phrase
+from maltego_trx.maltego import CleanMaltegoEntity
 
 from maltego_trx.transform import DiscoverableTransform
 
@@ -10,6 +10,6 @@ class GreetPerson(DiscoverableTransform):
 
     @classmethod
     def create_entities(cls, request, response):
-        person_name = request.Value
+        person_name = request.value
 
-        response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
+        response.entities.append(CleanMaltegoEntity('Phrase', f"Hi {person_name}, nice to meet you!"))

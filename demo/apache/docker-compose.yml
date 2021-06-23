@@ -3,6 +3,6 @@ services:
   python:
     build: .
     ports:
-       - "8080:8080"
+      - "8080:8080"
     volumes:
-       - .:/var/www/TRX/
+      - .:/var/www/TRX/

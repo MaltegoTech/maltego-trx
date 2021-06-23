@@ -1,1 +1,12 @@
-<Entity Type="maltego.Domain"><Value>pàterva.com</Value><Weight>10</Weight><DisplayInformation><Label Name="Website" Type="text/html"><![CDATA[' <a href='https://www.paterva.com/'>Website</a> ']]></Label></DisplayInformation><AdditionalFields><Field MatchingRule="loose" Name="link#maltego.link.color" DisplayName="LinkColor">000000</Field><Field MatchingRule="loose" Name="link#maltego.link.style" DisplayName="LinkStyle">2</Field></AdditionalFields><IconURL>https://www.paterva.com/web7/img/logo.png</IconURL></Entity>
+<Entity Type="maltego.Domain">
+    <Value>pï¿½terva.com</Value>
+    <Weight>10</Weight>
+    <DisplayInformation>
+        <Label Name="Website" Type="text/html"><![CDATA[' <a href='https://www.paterva.com/'>Website</a> ']]></Label>
+    </DisplayInformation>
+    <AdditionalFields>
+        <Field MatchingRule="loose" Name="link#maltego.link.color" DisplayName="LinkColor">000000</Field>
+        <Field MatchingRule="loose" Name="link#maltego.link.style" DisplayName="LinkStyle">2</Field>
+    </AdditionalFields>
+    <IconURL>https://www.paterva.com/web7/img/logo.png</IconURL>
+</Entity>

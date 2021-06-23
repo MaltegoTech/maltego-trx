@@ -1,5 +1,6 @@
-from maltego_trx.oauth import MaltegoOauth
 import os
+
+from maltego_trx.oauth import MaltegoOauth
 
 okta_ciphertoken = "pZ598ZEZ7EwpBQSOJSvCZJKkcWhtbX95K7Q0f0hwbk93O+xaUB4/NegK3r54PH1NReis/Jgt4UbGc5oCuU+R7UDM1icoDUmyCmV1U78iqjHElPdDBHlxPrl2zoXBwcU1iFbukDNy49Xghy3cwwqhmEXg/FKnYUlBQl6jdf06kE1pwfHiRgF5NrJISAD7eCmUybqiAVRDW4lbLeMGk/uSrrCpDQBxd2Em/sYKBzqO87pQRPLll23G9KNxyVinHQksGgc+dI0OPYv9EQcUs7g1JFraUKUeFjHAf/OyGGrp6WH84nGqG35afkH9xsDmySBb5DZWRjef8DzSd7oRagoGq3wKBHDh700mMKf/YkR8L9cK4l1w4yNh7EfIVlCWD5yWJUx4a1lN9CvJmFs7N9A903spVVGeP8avz50raWFb5g/4XhtIpei4ylVFi49dDeVjgb0BR0I4vuU7VDmcwFweAtSfclPb5Xfp98zI9yXnr8DB31gmzf3DIkVFIIFLxZe0gG+BSIEmC7/z0L7J+YvIqoGDq8jC0Ehe9IVXYfK1yluWAsbwj62rNAzkPVSe5l+FMQFrQRXpxZFBMXzphqRAhyYKfGNX/tocoMJoLFp8O3PBRC0kIHjTNaSX8KpftNYWreEdZx6wjk2n2eeOXM5nVeSOx4uoIifRe4NUV7VYzbGm3FSRc0k1HZIGHwn1WTvn95U3crvwFN86N3k41JU+0kzSpsLxy+Y63VfPxYTbRUET/wIOf0NTfG96QCPtVKkdVh9aTqnhaN0TpGoaZQEjUqpURxbj+8mT3g6MI4vOC9Qr6vw2wIkvzehr/yKxh6vsnfUUw8UJ1YtlZI7exPsHyFLUr2J3VvpDsaemRcn1KY/uHJZ3MMHK9GNciLA6Skw8SL38mw1tJJZ1h1bMMk1IYgBZLe2ZSXXyv7JaDPq/WJmHWDaIalmXE1cKMA56qMgYGdHxs3Pai5nwEtzIGVS1OcuMnBF6sOMMBTKSFAJmlcYo8NGwjKqe/yy1cVJZe7Ucv/jy/IS3AdE1my8cDya92jDsxifsaONQMm6YIs54SIA=$f7TU33wTTxYFtbVnwJeGGw==$c64l75qukq+980EkB1tQZKEicryt6HBB0IOjeMSRQmLOYCQpTcaXlPRJ3QdS+DfRocor7OL36wLAooRqz1IaN4QQ5+6Wx5reEXFVgKtaDX777I046DM5QU3Jf+iibSbm3mXYMw0z+OknbXyGLnc7ceSaPTJdP1LkCGQ75fLMXHCLWSpqwOKHOBhqyQGwrYlj2WxPzmOfAMaIkjKZIQWzoGjrYRzwkNCQbxykJcwD5TVuVDwAHyp84zcvW0WWoUZ+rrrooJwuJJQEdiTwLZsseqklXRNso4e5eFQwH49T9IDPHkKfVusu6rLiMNgFyc18rFR1d/BYLXBu7uzMAuvQ8wZdcOtJYx+JLJmOaPI65ymGNFTpwTHYnDBTXmpW0qX2dtEglAERw1nrdl94fwsa+I/iw3H7VIivqRF3pAchfvdNF75MIEm6XH2UXY/sZD7zjMdxxwKQiaEg2bpLd2mEtqsLc0mTq/zd03ZLEUnzXsXlp8brCfDgjoVsZAJH+ElQ6wr3dxzRMlDIxWWBYFcv8LnGVQk/Vciqtee780Yh/lgttv06kyXz81dIWjumz8TqV2eV9ZpP/YxTnNzAa91fleGNah/IKhMOV8PsGy2uOnHRiUL218p1T6+Cm9B2kmL1C/2MM3080NjJVWIfqYsyTGPbR+hURK0RB/oteG5QWPs="
 private_key_path = "test_private_key.pem"
@@ -14,6 +15,7 @@ def testOktaDecrypt():
 def testReadKey():
     assert os.path.exists(private_key_path)
 
+
 def testCipherSplit():
     encrypted_fields = okta_ciphertoken.split("$")
     assert len(encrypted_fields) == 3
@@ -25,8 +27,8 @@ def testToken_Field_Creation():
     token = MaltegoOauth._aes_decrypt(aes_key, encrypted_fields[0])
     token_secret = MaltegoOauth._aes_decrypt(aes_key, encrypted_fields[1])
     token_fields = {
-        "token": token,
-        "token_secret": token_secret
+            "token":        token,
+            "token_secret": token_secret
     }
     decrypted_azure_token_dict = MaltegoOauth.decrypt_secrets(private_key_path, okta_ciphertoken)
     assert token_fields == decrypted_azure_token_dict
