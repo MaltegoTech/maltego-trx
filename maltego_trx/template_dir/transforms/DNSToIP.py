@@ -1,7 +1,7 @@
 import socket
 
 from maltego_trx.entities import IPAddress, DNS
-from maltego_trx.maltego import MaltegoRequest, MaltegoResponse, CleanMaltegoEntity, UiMessage
+from maltego_trx.maltego import MaltegoRequest, MaltegoResponse, MaltegoEntity, UiMessage
 from maltego_trx.server import registry
 from maltego_trx.transform import DiscoverableTransform
 
@@ -18,7 +18,7 @@ class DNSToIP(DiscoverableTransform):
 
         try:
             ip_address = socket.gethostbyname(dns_name)
-            response.entities.append(CleanMaltegoEntity(IPAddress, ip_address))
+            response.entities.append(MaltegoEntity(IPAddress, ip_address))
 
         except socket.error as e:
             response.ui_messages.append(UiMessage("Error: " + str(e), 'PartialError'))

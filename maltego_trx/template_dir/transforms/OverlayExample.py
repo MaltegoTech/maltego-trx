@@ -1,5 +1,5 @@
 from maltego_trx.entities import Phrase
-from maltego_trx.maltego import MaltegoRequest, MaltegoResponse, CleanMaltegoEntity, EntityProperty, EntityOverlay
+from maltego_trx.maltego import MaltegoRequest, MaltegoResponse, MaltegoEntity, EntityProperty, EntityOverlay
 from maltego_trx.overlays import OverlayPosition, OverlayType
 from maltego_trx.server import registry
 
@@ -16,7 +16,7 @@ class OverlayExample(DiscoverableTransform):
     @classmethod
     def create_entities(cls, request: MaltegoRequest, response: MaltegoResponse):
         person_name = request.value
-        entity = CleanMaltegoEntity(entity_type='Phrase', value=f"Hi {person_name}, nice to meet you!")
+        entity = MaltegoEntity(entity_type='Phrase', value=f"Hi {person_name}, nice to meet you!")
 
         # Normally, when we create an overlay, we would reference a property name so that Maltego can then use the
         # value of that property to create the overlay. Sometimes that means creating a dynamic property, but usually

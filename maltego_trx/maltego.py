@@ -58,7 +58,7 @@ class UiMessage:
 
 
 @dataclass()
-class CleanMaltegoEntity:
+class MaltegoEntity:
     entity_type: str
     value: str
 
@@ -104,7 +104,7 @@ class CleanMaltegoEntity:
 
 @dataclass()
 class MaltegoResponse:
-    entities: list[CleanMaltegoEntity] = field(default_factory=list)
+    entities: list[MaltegoEntity] = field(default_factory=list)
     exceptions: list[str] = field(default_factory=list)
     ui_messages: list[UiMessage] = field(default_factory=list)
 
@@ -230,7 +230,7 @@ class MaltegoRequest:
         message.weight = 100
         message.slider = 100
 
-        # don't know what this does
+        # don't know what this does - FHE
         if len(local_args) > 1:
             hash_rnd = uuid.uuid4().hex.upper()[0:7]
             equals_rnd = uuid.uuid4().hex.upper()[0:7]
@@ -252,3 +252,41 @@ class MaltegoRequest:
             message.settings = {}
 
         return message
+
+
+class EntityPropertyDefinition:
+    name: str
+    description: str
+    property_type: str
+    nullable: bool
+    hidden: bool
+    readonly: bool
+
+    def build_xml(self) -> Element:
+        raise NotImplementedError
+
+
+class MaltegoEntityDefinition:
+    # TODO: prefix: Optional[str] --> would override global company.project
+    # also might be constructed with 'category'
+
+    id: str
+    display_name: str
+    display_name_plural: str
+    description: str
+    category: str
+
+    small_icon_resource: str
+    large_icon_resource: str
+
+    allowed_root: str
+    conversion_order: int
+
+    visible: bool
+    # Union[str, MaltegoEntityDefinition] might be cooler for refactoring
+    base_entities: list[str]
+
+    properties: list[EntityProperty]
+
+    def build_xml(self) -> Element:
+        raise NotImplementedError
