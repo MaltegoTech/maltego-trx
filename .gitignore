@@ -5,3 +5,4 @@ dist/
 __pycache__
 maltego_trx.egg-info
 .pytest_cache
+venv
