@@ -8,7 +8,7 @@ WORKDIR /var/www/TRX/
 RUN apt-get update
 RUN apt-get install apache2 -y
 RUN apt-get install libapache2-mod-wsgi-py3 -y
-RUN apt-get install python3 python3-pip -y
+RUN apt-get install python3-pip -y
 
 COPY ./TRX.conf /etc/apache2/sites-available/TRX.conf
 RUN a2ensite TRX.conf
