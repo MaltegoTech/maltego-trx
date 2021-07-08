@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-The library can be used in either Python2 or Python 3 (recommended).
+_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use up-to-date versions of Maltego TRX._
 
 To install the trx library run the following command:
 
