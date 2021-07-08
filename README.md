@@ -10,22 +10,23 @@ To install the trx library run the following command:
 pip install maltego-trx
 ```
 
-After installing you can create a new project by running the following command:
+After installing, you can create a new project by running the following command:
 
 ``` bash
 maltego-trx start new_project
 ```
 
-This will create a folder new_project with the recommend project structure.
+This will create a folder new_project with the recommended project structure.
 
-Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. 
-These also include Dockerfile and corresponding docker-compose configuration files for production deployment.
+Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. These also
+include Dockerfile and corresponding docker-compose configuration files for production deployment.
 
 **Adding a Transform:**
 
 Add a new transform by creating a new python file in the "transforms" folder of your directory.
 
-Any file in the folder where the **class name matches the filename** and the class inherits from Transform, will automatically be discovered and added to your server.
+Any file in the folder where the **class name matches the filename**, and the class inherits from Transform, will
+automatically be discovered and added to your server.
 
 A simple transform would look like the following:
 
@@ -72,11 +73,13 @@ gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app
 
 ## Run a Docker Transform server
 
-The `demo` folder provides an example project. The Docker files given can be used to setup and run your project in Docker.
+The `demo` folder provides an example project. The Docker files given can be used to set up and run your project in
+Docker.
 
 The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
 
-If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the following commands to run the server in Docker.
+If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the
+following commands to run the server in Docker.
 
 Run the following to start the development server:
 
@@ -115,12 +118,170 @@ The following values are not passed to local transforms, and will have dummy val
 - `slider`: 100
 - `transformSettings`: {}
 
+## Using the Transform Registry
+
+###### Added in 1.4.0 (July 2021)
+
+The Transform Registry enables you to annotate Transforms with metadata like display name, description, input and output
+entities as well as settings. The Transform Registry will automatically generate CSV files that you can import into the
+pTDS and/or your iTDS.
+
+### Configuring the Registry
+
+You can configure your registry with all the info you would normally add for every transform/seed on a TDS. We recommend
+creating your registry in an extra file, traditionally called `extensions.py`, to avoid circular imports.
+
+```python
+# extensions.py
+from settings import api_key_setting
+
+from maltego_trx.decorator_registry import TransformRegistry
+
+registry = TransformRegistry(
+        owner="ACME Corporation",
+        author="John Doe <johndoe@acme.com>",
+        host_url="https://transforms.acme.org",
+        seed_ids=["demo"]
+)
+
+# The rest of these attributes are optional
+
+# metadata
+registry.version = "0.1"
+
+# global settings
+registry.global_settings = [api_key_setting]
+
+# transform suffix to indicate datasource
+registry.display_name_suffix = " [ACME]"
+
+# reference OAuth settings
+registry.oauth_settings_id = ['github-oauth']
+
+```
+
+### Annotating Transforms
+
+```python
+# transforms/GreetPerson.py
+...
+from maltego_trx.server import registry
+
+
+@registry.register_transform(display_name='Greet Person',
+                             input_entity='maltego.Phrase',
+                             description='Returns a phrase greeting a person on the graph.',
+                             output_entities=['maltego.Phrase'],
+                             disclaimer='This disclaimer is optional and has to be accepted before this transform is run')
+class GreetPerson(DiscoverableTransform):
+
+    @classmethod
+    def create_entities(cls, request, response):
+        ...
+```
+
+### Transform Settings
+
+You can declare transform settings in a central location and add them to the registry.
+
+#### Configuring Global Settings
+
+These settings will apply to all transforms which can be very helpful for api keys.
+
+```python
+# settings.py
+from maltego_trx.decorator_registry import TransformSetting
+
+api_key_setting = TransformSetting(name='api_key',
+                                   display_name='API Key',
+                                   setting_type='string',
+                                   global_setting=True)
+```
+
+```python
+# extensions.py
+from maltego_trx.template_dir.settings import api_key_setting
+
+from maltego_trx.decorator_registry import TransformRegistry
+
+registry = TransformRegistry(
+        owner="ACME Corporation",
+        author="John Doe <johndoe@acme.com>",
+        host_url="https://transforms.acme.org",
+        seed_ids=["demo"]
+)
+
+registry.global_settings = [api_key_setting]
+```
+
+#### Configuring Settings per Transform
+
+Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly.
+
+```python
+# settings.py
+...
+
+language_setting = TransformSetting(name='language',
+                                    display_name="Language",
+                                    setting_type='string',
+                                    default_value='en',
+                                    optional=True,
+                                    popup=True)
+```
+
+```python
+# transforms/GreetPerson.py
+...
+from maltego_trx.template_dir.settings import language_setting
+
+from maltego_trx.transform import DiscoverableTransform
+
+
+@registry.register_transform(display_name="Greet Person",
+                             input_entity="maltego.Phrase",
+                             description='Returns a phrase greeting a person on the graph.',
+                             settings=[language_setting])
+class GreetPerson(DiscoverableTransform):
+
+    @classmethod
+    def create_entities(cls, request: MaltegoMsg, response: MaltegoTransform):
+        language = request.getTransformSetting(language_setting.name)
+        ...
+```
+
+### Exporting the TDS Configuration
+
+To export the configurations, use the registry methods `write_transforms_config()` and `write_settings_config()`. These
+methods have to executed after they have been registered with the TRX server.
+
+```python
+# project.py
+
+import sys
+import transforms
+
+from maltego_trx.registry import register_transform_function, register_transform_classes
+from maltego_trx.server import app, application
+from maltego_trx.handler import handle_run
+
+# register_transform_function(transform_func)
+from maltego_trx.template_dir.extensions import registry
+
+register_transform_classes(transforms)
+
+registry.write_transforms_config()
+registry.write_settings_config()
+
+handle_run(__name__, sys.argv, app)
+```
+
 ## Legacy Transforms
 
 [Documentation](https://docs.maltego.com/support/solutions/articles/15000018299-porting-old-trx-transforms-to-the-latest-version)
 
-If you have old TRX transforms that are written as functions,
-they can be registered with the server using the `maltego_trx.registry.register_transform_function` method.
+If you have old TRX transforms that are written as functions, they can be registered with the server using
+the `maltego_trx.registry.register_transform_function` method.
 
 In order to port your old transforms, make two changes:
 
@@ -142,6 +303,7 @@ To:
 ```python
 
 from maltego_trx.maltego import MaltegoTransform
+
 
 def old_transform(m):
 ```
@@ -214,6 +376,7 @@ You need to enable the `debug` filter option in the Desktop client Output window
 Overlays Enums are imported from `maltego_trx.overlays`
 
 *Overlay OverlayPosition:*
+
 - `NORTH = "N"`
 - `SOUTH = "S"`
 - `WEST = "W"`
@@ -222,6 +385,7 @@ Overlays Enums are imported from `maltego_trx.overlays`
 - `CENTER = "C"`
 
 *Overlay Type*
+
 - `IMAGE = "image"`
 - `COLOUR = "colour"`
 - `TEXT = "text"`
@@ -238,28 +402,28 @@ The request/maltego msg object given to the transform contains the information a
 - `Type: str`: The input entity type
 - `Properties: dict(str: str)`: A key-value dictionary of the input entity properties
 - `TransformSettings: dict(str: str)`: A key-value dictionary of the transform settings
-- `Genealogy: list(dict(str: str))`: A key-value dictionary of the Entity genealogy, 
-    this is only applicable for extended entities e.g. Website Entity
+- `Genealogy: list(dict(str: str))`: A key-value dictionary of the Entity genealogy, this is only applicable for
+  extended entities e.g. Website Entity
 
 **Methods:**
 
 - `getProperty(name: str)`: Get a property value of the input entity
 - `getTransformSetting(name: str)`: Get a transform setting value
-- `clearLegacyProperties()`: Delete (duplicate) legacy properties from the input entity. This will not result in 
-property information being lost, it will simply clear out some properties that the TRX library duplicates on all 
-incoming Transform requests. In older versions of TRX, these Entity properties would have a different internal ID when 
-sent the server than what the Maltego client would advertise in the Entity Manager UI. For a list of Entities with such 
-properties and their corresponding legacy and actual IDs, see `entity_property_map` in `maltego_trx/entities.py`. For 
-the majority of projects this distinction can be safely ignored.  
+- `clearLegacyProperties()`: Delete (duplicate) legacy properties from the input entity. This will not result in
+  property information being lost, it will simply clear out some properties that the TRX library duplicates on all
+  incoming Transform requests. In older versions of TRX, these Entity properties would have a different internal ID when
+  sent the server than what the Maltego client would advertise in the Entity Manager UI. For a list of Entities with
+  such properties and their corresponding legacy and actual IDs, see `entity_property_map` in `maltego_trx/entities.py`.
+  For the majority of projects this distinction can be safely ignored.
 
 ### Response/MaltegoTransform
 
 **Methods:**
 
-- `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object 
-created by the method.
-- `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message 
-type constant.
+- `addEntity(type: str, value: str) -> Entity`: Add an entity to the transform response. Returns an Entity object
+  created by the method.
+- `addUIMessage(message: str, messageType='Inform')`: Return a UI message to the user. For message type, use a message
+  type constant.
 
 ### Entity
 
@@ -269,10 +433,10 @@ type constant.
 - `setValue(value: str)`: Set the entity value
 - `setWeight(weight: int)`: Set the entity weight
 - `addDisplayInformation(content: str, title: str)`: Add display information for the entity.
-- `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. 
-Matching rule can be `strict` or `loose`.
-- `addOverlay(propertyName: str, position: OverlayPosition, overlay_type: OverlayType)`: Add an overlay to the entity. 
-`OverlayPosition` and `OverlayType` are defined in the `maltego_tx.overlays`
+- `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. Matching
+  rule can be `strict` or `loose`.
+- `addOverlay(propertyName: str, position: OverlayPosition, overlay_type: OverlayType)`: Add an overlay to the entity.
+  `OverlayPosition` and `OverlayType` are defined in the `maltego_tx.overlays`
 
 Overlay can be added as Text, Image or Color
 
