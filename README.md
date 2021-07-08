@@ -180,6 +180,12 @@ class GreetPerson(DiscoverableTransform):
         ...
 ```
 
+**Pro Tip:** If the `display_name` is either `None` or `""`, the registry will try to create a display name from the class
+name:
+
+- `DNSToIP` 'DNS To IP'
+- `GreetPerson` 'Greet Person'
+
 ### Transform Settings
 
 You can declare transform settings in a central location and add them to the registry.
