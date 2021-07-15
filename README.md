@@ -160,7 +160,7 @@ registry.oauth_settings_id = ['github-oauth']
 ```python
 # transforms/GreetPerson.py
 ...
-from maltego_trx.server import registry
+from extensions import registry
 
 
 @registry.register_transform(display_name='Greet Person',
