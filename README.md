@@ -133,8 +133,6 @@ creating your registry in an extra file, traditionally called `extensions.py`, t
 
 ```python
 # extensions.py
-from settings import api_key_setting
-
 from maltego_trx.decorator_registry import TransformRegistry
 
 registry = TransformRegistry(
@@ -148,9 +146,6 @@ registry = TransformRegistry(
 
 # metadata
 registry.version = "0.1"
-
-# global settings
-registry.global_settings = [api_key_setting]
 
 # transform suffix to indicate datasource
 registry.display_name_suffix = " [ACME]"
@@ -206,7 +201,7 @@ api_key_setting = TransformSetting(name='api_key',
 
 ```python
 # extensions.py
-from maltego_trx.template_dir.settings import api_key_setting
+from settings import api_key_setting
 
 from maltego_trx.decorator_registry import TransformRegistry
 
@@ -239,7 +234,7 @@ language_setting = TransformSetting(name='language',
 ```python
 # transforms/GreetPerson.py
 ...
-from maltego_trx.template_dir.settings import language_setting
+from settings import language_setting
 
 from maltego_trx.transform import DiscoverableTransform
 
@@ -272,7 +267,7 @@ from maltego_trx.server import app, application
 from maltego_trx.handler import handle_run
 
 # register_transform_function(transform_func)
-from maltego_trx.template_dir.extensions import registry
+from extensions import registry
 
 register_transform_classes(transforms)
 
