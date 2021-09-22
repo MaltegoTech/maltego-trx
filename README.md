@@ -163,11 +163,13 @@ registry.oauth_settings_id = ['github-oauth']
 from extensions import registry
 
 
-@registry.register_transform(display_name='Greet Person',
-                             input_entity='maltego.Phrase',
-                             description='Returns a phrase greeting a person on the graph.',
-                             output_entities=['maltego.Phrase'],
-                             disclaimer='This disclaimer is optional and has to be accepted before this transform is run')
+@registry.register_transform(
+    display_name='Greet Person',
+    input_entity='maltego.Phrase',
+    description='Returns a phrase greeting a person on the graph.',
+    output_entities=['maltego.Phrase'],
+    disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
+)
 class GreetPerson(DiscoverableTransform):
 
     @classmethod
