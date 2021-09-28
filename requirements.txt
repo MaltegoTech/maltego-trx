@@ -1,0 +1,4 @@
+flask>=1
+six>=1
+cryptography==3.3.2 # pinned for now as newer versions require setuptools_rust
+dataclasses==0.8; python_version < "3.7"
