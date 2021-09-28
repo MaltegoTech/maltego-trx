@@ -219,7 +219,7 @@ registry.global_settings = [api_key_setting]
 
 #### Configuring Settings per Transform
 
-Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly.
+Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly. To access the setting on the request, use the `id` property, which will have the global prefix if it's a global setting. The `name` property won't work on global settings.
 
 ```python
 # settings.py
@@ -249,7 +249,7 @@ class GreetPerson(DiscoverableTransform):
 
     @classmethod
     def create_entities(cls, request: MaltegoMsg, response: MaltegoTransform):
-        language = request.getTransformSetting(language_setting.name)
+        language = request.getTransformSetting(language_setting.id)
         ...
 ```
 
