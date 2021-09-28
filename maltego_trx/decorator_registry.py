@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass, field
 from itertools import chain
-from typing import List, Literal, Optional, Dict, Iterable
+from typing import List, Optional, Dict, Iterable
 
 from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
     name_to_path
@@ -26,7 +26,7 @@ class TransformMeta:
 class TransformSetting:
     name: str
     display_name: str
-    setting_type: Literal['string', 'boolean', 'date', 'datetime', 'daterange', 'url', 'double', 'int']
+    setting_type: str  # Literal['string', 'boolean', 'date', 'datetime', 'daterange', 'url', 'double', 'int']
 
     default_value: Optional[str] = ""
     optional: bool = False
