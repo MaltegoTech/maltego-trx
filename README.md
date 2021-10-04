@@ -1,5 +1,8 @@
 # Maltego TRX Python Library
 
+## Release Notes
+__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower. The issue is already fixed and will be published in 1.4.2.
+
 ## Getting Started
 
 _Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use up-to-date versions of Maltego TRX._
