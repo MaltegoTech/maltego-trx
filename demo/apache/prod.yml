@@ -1,7 +1,0 @@
-version: '3'
-services:
-  python:
-    build: .
-    command: bash -c "service apache2 restart && tail -f /var/log/apache2/*.log"
-    ports:
-       - "8080:8080"
