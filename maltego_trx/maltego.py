@@ -284,6 +284,9 @@ class MaltegoMsg:
             self.Weight = 100
             self.Slider = 100
 
+            self.TransformSettings = {}
+            self.Properties = {}
+
             if len(LocalArgs) > 1:
                 hash_rnd = uuid.uuid4().hex.upper()[0:7]
                 equals_rnd = uuid.uuid4().hex.upper()[0:7]
@@ -294,7 +297,6 @@ class MaltegoMsg:
                     .replace("\\=", equals_rnd)
 
                 self.buildProperties(text.split("#"), hash_rnd, equals_rnd, bslash_rnd)
-                self.TransformSettings = {}
 
     def clearLegacyProperties(self):
         to_clear = set()
