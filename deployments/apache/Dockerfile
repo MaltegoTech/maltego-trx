@@ -20,6 +20,9 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 # Copy project files and assign them to www-data
 COPY . .
+# Assert project.wsgi is present
+COPY project.wsgi .
+
 RUN chown -R www-data:www-data /var/www/maltego-trx/
 
 EXPOSE 8080
