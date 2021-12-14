@@ -1,1 +1,1 @@
-maltego-trx>=1.4.1
+maltego-trx>=1.4.2
