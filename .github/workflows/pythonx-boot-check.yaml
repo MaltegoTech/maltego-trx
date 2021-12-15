@@ -1,0 +1,29 @@
+name: 'Runs with Python3.6 - Python3.10'
+
+on: [ push ]
+
+jobs:
+  boots:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.6.x', '3.7.x', '3.8.x', '3.9.x', '3.10.x' ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install maltego-trx:1.4.2
+        run: |
+          python -m pip install --upgrade pip
+          pip3 install maltego-trx==1.4.2
+
+      - name: Create starter Project
+        run: |
+          maltego-trx start test
+          cd test
+          python3 project.py list
