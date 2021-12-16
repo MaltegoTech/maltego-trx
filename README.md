@@ -5,9 +5,9 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg?branch=feat%2Fworkflows)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower.
 
-__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower. The issue is already fixed and will be
-published in 1.4.2.
+__1.4.2__: Fixed python3.6 incomptibility
 
 ## Getting Started
 
