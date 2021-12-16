@@ -1,13 +1,13 @@
+from extensions import registry
 from maltego_trx.entities import Phrase
 from maltego_trx.maltego import MaltegoTransform, MaltegoMsg
-from maltego_trx.template_dir.extensions import registry
-from maltego_trx.template_dir.settings import language_setting
 
 from maltego_trx.transform import DiscoverableTransform
+from settings import language_setting
 
 
 @registry.register_transform(display_name="Greet Person (localized)", input_entity="maltego.Phrase",
-                             description='Returns a localized phrase greeting a person on the graph.',
+                             description='Returns a localized Phrase greeting a Person.',
                              settings=[language_setting],
                              output_entities=["maltego.Phrase"])
 class GreetPersonLocalized(DiscoverableTransform):

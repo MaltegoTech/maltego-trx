@@ -1,11 +1,14 @@
 # Maltego TRX Python Library
 
 ## Release Notes
-__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower. The issue is already fixed and will be published in 1.4.2.
+
+__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower. The issue is already fixed and will be
+published in 1.4.2.
 
 ## Getting Started
 
-_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use up-to-date versions of Maltego TRX._
+_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use
+up-to-date versions of Maltego TRX._
 
 To install the trx library run the following command:
 
@@ -19,17 +22,16 @@ After installing, you can create a new project by running the following command:
 maltego-trx start new_project
 ```
 
-This will create a folder new_project with the recommended project structure.
-
-Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. These also
-include Dockerfile and corresponding docker-compose configuration files for production deployment.
+This will create a folder new_project with the recommended project structure including a Dockerfile serving maltego-trx
+with `unicorn` and `gevent`. Alternatively, you can find a configuration for `Apache2` in the deployments directory as
+well as `docker-compose` configurations for productions servers.
 
 **Adding a Transform:**
 
 Add a new transform by creating a new python file in the "transforms" folder of your directory.
 
-Any file in the folder where the **class name matches the filename**, and the class inherits from Transform, will
-automatically be discovered and added to your server.
+Any file in the folder where the **class name matches the filename**, and the class inherits
+from `DiscoverableTransform`, will automatically be discovered and added to your server.
 
 A simple transform would look like the following:
 
@@ -38,6 +40,7 @@ A simple transform would look like the following:
 ``` python
 from maltego_trx.entities import Phrase
 from maltego_trx.transform import DiscoverableTransform
+from maltego_trx.maltego import MaltegoMsg, MaltegoTransform
 
 
 class GreetPerson(DiscoverableTransform):
@@ -46,10 +49,10 @@ class GreetPerson(DiscoverableTransform):
     """
 
     @classmethod
-    def create_entities(cls, request, response):
+    def create_entities(cls, request: MaltegoMsg, response: MaltegoTransform):
         person_name = request.Value
 
-        response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
+        response.addEntity(Phrase, f"Hi {person_name}, nice to meet you!")
 ```
 
 ## Running The Transform Server
@@ -59,10 +62,10 @@ class GreetPerson(DiscoverableTransform):
 You can start the development server, by running the following command:
 
 ``` bash
-python project.py runserver
+python3 project.py runserver
 ```
 
-This will startup a development server that automatically reloads every time the code is changed.
+This will start up a development server that automatically reloads every time the code is changed.
 
 ### For Production
 
@@ -72,17 +75,16 @@ You can run a gunicorn transform server, after installing gunicorn on the host m
 gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app
 ```
 
-*For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
+*For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as nginx.*
 
 ## Run a Docker Transform server
 
-The `demo` folder provides an example project. The Docker files given can be used to set up and run your project in
-Docker.
+The `Dockerfiles` can be used to set up and run your project in Docker.
 
-The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
+The `Dockerfile` and `docker-compose.yml` files can be used to easily set up and run a development transform server.
 
-If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the
-following commands to run the server in Docker.
+If you have copied the `docker-compose.yml` file into your project, you can use the following commands to run the server
+in Docker.
 
 Run the following to start the development server:
 
@@ -93,7 +95,7 @@ docker-compose up
 Run the following command to run a production gunicorn server:
 
 ``` bash
-docker-compose -f prod.yml up --build
+docker-compose -f docker-compose.yml up --build
 ```
 
 *For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
@@ -167,21 +169,21 @@ from extensions import registry
 
 
 @registry.register_transform(
-    display_name='Greet Person',
-    input_entity='maltego.Phrase',
-    description='Returns a phrase greeting a person on the graph.',
-    output_entities=['maltego.Phrase'],
-    disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
+        display_name='Greet Person',
+        input_entity='maltego.Phrase',
+        description='Returns a phrase greeting a person on the graph.',
+        output_entities=['maltego.Phrase'],
+        disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
 )
 class GreetPerson(DiscoverableTransform):
 
     @classmethod
-    def create_entities(cls, request, response):
+    def create_entities(cls, request: MaltegoMsg, response: MaltegoTransform):
         ...
 ```
 
-**Pro Tip:** If the `display_name` is either `None` or `""`, the registry will try to create a display name from the class
-name:
+**Pro Tip:** If the `display_name` is either `None` or `""`, the registry will try to create a display name from the
+class name:
 
 - `DNSToIP` 'DNS To IP'
 - `GreetPerson` 'Greet Person'
@@ -211,10 +213,10 @@ from settings import api_key_setting
 from maltego_trx.decorator_registry import TransformRegistry
 
 registry = TransformRegistry(
-        owner="ACME Corporation",
-        author="John Doe <johndoe@acme.com>",
-        host_url="https://transforms.acme.org",
-        seed_ids=["demo"]
+        owner='ACME Corporation',
+        author='John Doe <johndoe@acme.com>',
+        host_url='https://transforms.acme.org',
+        seed_ids=['demo']
 )
 
 registry.global_settings = [api_key_setting]
@@ -222,14 +224,16 @@ registry.global_settings = [api_key_setting]
 
 #### Configuring Settings per Transform
 
-Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly. To access the setting on the request, use the `id` property, which will have the global prefix if it's a global setting. The `name` property won't work on global settings.
+Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly. To
+access the setting on the request, use the `id` property, which will have the global prefix if it's a global setting.
+The `name` property won't work on global settings.
 
 ```python
 # settings.py
 ...
 
 language_setting = TransformSetting(name='language',
-                                    display_name="Language",
+                                    display_name='Language',
                                     setting_type='string',
                                     default_value='en',
                                     optional=True,
@@ -244,8 +248,8 @@ from settings import language_setting
 from maltego_trx.transform import DiscoverableTransform
 
 
-@registry.register_transform(display_name="Greet Person",
-                             input_entity="maltego.Phrase",
+@registry.register_transform(display_name='Greet Person',
+                             input_entity='maltego.Phrase',
                              description='Returns a phrase greeting a person on the graph.',
                              settings=[language_setting])
 class GreetPerson(DiscoverableTransform):
