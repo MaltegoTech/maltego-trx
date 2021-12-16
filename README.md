@@ -1,8 +1,8 @@
 # Maltego TRX Python Library
 
-[![Runs with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg?branch=feat%2Fworkflows)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
+[![Runs with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
 
-[![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg?branch=feat%2Fworkflows)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
+[![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
 __1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower.
