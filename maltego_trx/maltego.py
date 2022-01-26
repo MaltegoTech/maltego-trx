@@ -235,6 +235,9 @@ class MaltegoMsg:
             return 0
 
     def __init__(self, MaltegoXML="", LocalArgs=[]):
+        self.TransformSettings = {}
+        self.Properties = {}
+
         if MaltegoXML:
             maltego_msg = minidom.parseString(MaltegoXML)
             entities = maltego_msg.getElementsByTagName("Entity")
@@ -256,7 +259,6 @@ class MaltegoMsg:
                 self.Genealogy.append(entity_type)
 
             # Additional Fields
-            self.Properties = {}
             additional_fields_tag = entity.getElementsByTagName("AdditionalFields")
             additional_fields = additional_fields_tag[0].getElementsByTagName("Field") if additional_fields_tag else []
             for field in additional_fields:
@@ -269,13 +271,13 @@ class MaltegoMsg:
                         self.Properties[v3_property_name] = value
 
             # Transform Settings
-            self.TransformSettings = {}
             settings_tag = maltego_msg.getElementsByTagName("TransformFields")
             settings = settings_tag[0].getElementsByTagName("Field") if settings_tag else []
             for setting in settings:
                 name = setting.getAttribute("Name")
                 value = self._get_text(setting)
                 self.TransformSettings[name] = value
+
         elif LocalArgs:
             self.Value = LocalArgs[0]
             self.Type = "local.Unknown"
@@ -294,7 +296,6 @@ class MaltegoMsg:
                     .replace("\\=", equals_rnd)
 
                 self.buildProperties(text.split("#"), hash_rnd, equals_rnd, bslash_rnd)
-                self.TransformSettings = {}
 
     def clearLegacyProperties(self):
         to_clear = set()
