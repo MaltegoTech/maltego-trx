@@ -1,11 +1,18 @@
 # Maltego TRX Python Library
 
+[![Runs with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
+
+[![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
+
 ## Release Notes
-__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower. The issue is already fixed and will be published in 1.4.2.
+__1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower.
+
+__1.4.2__: Fixed python3.6 incomptibility
 
 ## Getting Started
 
-_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use up-to-date versions of Maltego TRX._
+_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use
+up-to-date versions of Maltego TRX._
 
 To install the trx library run the following command:
 
@@ -167,11 +174,11 @@ from extensions import registry
 
 
 @registry.register_transform(
-    display_name='Greet Person',
-    input_entity='maltego.Phrase',
-    description='Returns a phrase greeting a person on the graph.',
-    output_entities=['maltego.Phrase'],
-    disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
+        display_name='Greet Person',
+        input_entity='maltego.Phrase',
+        description='Returns a phrase greeting a person on the graph.',
+        output_entities=['maltego.Phrase'],
+        disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
 )
 class GreetPerson(DiscoverableTransform):
 
@@ -180,8 +187,8 @@ class GreetPerson(DiscoverableTransform):
         ...
 ```
 
-**Pro Tip:** If the `display_name` is either `None` or `""`, the registry will try to create a display name from the class
-name:
+**Pro Tip:** If the `display_name` is either `None` or `""`, the registry will try to create a display name from the
+class name:
 
 - `DNSToIP` 'DNS To IP'
 - `GreetPerson` 'Greet Person'
@@ -222,7 +229,9 @@ registry.global_settings = [api_key_setting]
 
 #### Configuring Settings per Transform
 
-Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly. To access the setting on the request, use the `id` property, which will have the global prefix if it's a global setting. The `name` property won't work on global settings.
+Settings that aren't required for every transform have to be added to the `register_transform` decorator explicitly. To
+access the setting on the request, use the `id` property, which will have the global prefix if it's a global setting.
+The `name` property won't work on global settings.
 
 ```python
 # settings.py
