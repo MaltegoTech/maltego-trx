@@ -1,18 +1,20 @@
+from extensions import registry
 from maltego_trx.entities import Phrase
+from maltego_trx.maltego import MaltegoMsg, MaltegoTransform
 from maltego_trx.overlays import OverlayPosition, OverlayType
 
 from maltego_trx.transform import DiscoverableTransform
 
 
+@registry.register_transform(display_name="Overlay Example", input_entity="maltego.Person",
+                             description='Returns a phrase with overlays on the graph.',
+                             output_entities=["maltego.Phrase"])
 class OverlayExample(DiscoverableTransform):
-    """
-    Returns a phrase with overlays on the graph.
-    """
 
     @classmethod
-    def create_entities(cls, request, response):
+    def create_entities(cls, request: MaltegoMsg, response: MaltegoTransform):
         person_name = request.Value
-        entity = response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
+        entity = response.addEntity(Phrase, f"Hi {person_name}, nice to meet you!")
 
         # Normally, when we create an overlay, we would reference a property name so that Maltego can then use the
         # value of that property to create the overlay. Sometimes that means creating a dynamic property, but usually
@@ -32,4 +34,3 @@ class OverlayExample(DiscoverableTransform):
 
         # Or a small color indicator
         entity.addOverlay('#45e06f', OverlayPosition.NORTH_WEST, OverlayType.COLOUR)
-
