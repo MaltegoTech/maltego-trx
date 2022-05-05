@@ -24,6 +24,12 @@ setup(
         'maltego_trx/template_dir',
         'maltego_trx/template_dir/transforms'
     ],
+    package_data={
+        'maltego_trx/template_dir': [
+            'settings.csv',
+            'transforms.csv'
+        ]
+    },
     entry_points={
         'console_scripts': [
             'maltego-trx = maltego_trx.commands:execute_from_command_line',
