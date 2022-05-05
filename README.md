@@ -5,6 +5,8 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+__1.4.4__: Added skeletons for csv export in template dir and made project.py app import compatible with docs
+
 __1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower.
 
 __1.4.2__: Fixed python3.6 incomptibility
