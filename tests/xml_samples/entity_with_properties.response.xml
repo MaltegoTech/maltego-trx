@@ -1,0 +1,21 @@
+<MaltegoMessage>
+    <MaltegoTransformResponseMessage>
+        <Entities>
+            <Entity Type="maltego.Phrase">
+                <Value>
+                    Hello Spencer!
+                </Value>
+                <Weight>100</Weight>
+                <AdditionalFields>
+                    <Field MatchingRule="loose" Name="fieldNameTest" DisplayName="displayNameTest">
+                        valueTest
+                    </Field>
+                    <Field MatchingRule="strict" Name="fieldNameTest2" DisplayName="displayNameTest2">
+                        valueTest2
+                    </Field>
+                </AdditionalFields>
+            </Entity>
+        </Entities>
+        <UIMessages></UIMessages>
+    </MaltegoTransformResponseMessage>
+</MaltegoMessage>

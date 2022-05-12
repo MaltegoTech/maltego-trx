@@ -1,0 +1,12 @@
+<MaltegoMessage>
+    <MaltegoTransformResponseMessage>
+        <Entities>
+            <Entity Type="maltego.Phrase">
+                <Value><![CDATA[Hello Spencer!]]></Value>
+                <Weight>100</Weight>
+                <IconURL>https://www.maltego.com/img/maltego-logo/maltego-horizontal.png</IconURL>
+            </Entity>
+        </Entities>
+        <UIMessages></UIMessages>
+    </MaltegoTransformResponseMessage>
+</MaltegoMessage>

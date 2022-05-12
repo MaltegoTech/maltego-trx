@@ -1,10 +1,10 @@
 import uuid;
-
 from xml.dom import minidom
+from xml.etree.ElementTree import Element, SubElement
 
 from .entities import Phrase, translate_legacy_property_name, entity_property_map
 from .overlays import OverlayPosition, OverlayType
-from .utils import remove_invalid_xml_chars
+from .utils import remove_invalid_xml_chars, serialize_xml
 
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
@@ -131,38 +131,54 @@ class MaltegoEntity(object):
             "name": name,
         }
 
-    def returnEntity(self):
-        lines = []
-        lines.append("<Entity Type=\"%s\">" % str(self.entityType))
-        lines.append("<Value><![CDATA[%s]]></Value>" % str(self.value))
-        lines.append("<Weight>%s</Weight>" % str(self.weight))
+    def build_xml(self) -> Element:
+        entity_xml = Element('Entity', attrib={'Type': self.entityType})
+
+        value_xml = SubElement(entity_xml, 'Value')
+        value_xml.text = str(self.value)
+
+        weight_xml = SubElement(entity_xml, 'Weight')
+        weight_xml.text = str(self.weight)
+
         if self.displayInformation:
-            lines.append("<DisplayInformation>")
-            for disp_info in self.displayInformation:
-                lines.append(self.disp_info_to_xml(disp_info))
-            lines.append("</DisplayInformation>")
+            display_infos_xml = SubElement(entity_xml, 'DisplayInformation')
+            for display_info in self.displayInformation:
+                title, content = display_info
+
+                display_info_xml = SubElement(display_infos_xml, 'Label', attrib={'Name': title, 'Type': "text/html"})
+                # for some reason, the client accepts escaped html and renders it correctly, so we don't need CDATA
+                display_info_xml.text = str(content)
 
         if self.additionalFields:
-            lines.append("<AdditionalFields>")
-            for additional_field in self.additionalFields:
-                lines.append(self.add_field_to_xml(additional_field))
-            lines.append("</AdditionalFields>")
+            properties_xml = SubElement(entity_xml, 'AdditionalFields')
+            for prop in self.additionalFields:
+                title, display, matching, val = prop
+                matching = "strict" if matching.lower().strip() == "strict" else "loose"
+
+                field_xml = SubElement(properties_xml, 'Field',
+                                       attrib={'Name': str(title),
+                                               'DisplayName': str(display),
+                                               'MatchingRule': matching})
+                field_xml.text = str(val)
 
         if self.overlays:
-            lines.append("<Overlays>")
+            overlays_xml = SubElement(entity_xml, 'Overlays')
             for overlay in self.overlays:
-                overlay_tag = OVERLAY_TEMPLATE % {
-                    "property_name": overlay[0],
-                    "position": overlay[1],
-                    "type": overlay[2],
-                }
-                lines.append(overlay_tag)
-            lines.append("</Overlays>")
-        if self.iconURL:
-            lines.append("<IconURL>%s</IconURL>" % self.iconURL)
+                property_name, position, overlay_type = overlay
 
-        lines.append("</Entity>")
-        return "".join(lines)
+                SubElement(overlays_xml, 'Overlay',
+                           attrib={'propertyName': property_name,
+                                   'position': position,
+                                   'type': overlay_type})
+
+        if self.iconURL:
+            icon_xml = SubElement(entity_xml, 'IconURL')
+            icon_xml.text = self.iconURL
+
+        return entity_xml
+
+    def returnEntity(self):
+        return serialize_xml(self.build_xml())
 
 
 class MaltegoTransform(object):
@@ -182,39 +198,39 @@ class MaltegoTransform(object):
     def addException(self, exceptionString):
         self.exceptions.append(exceptionString)
 
-    def throwExceptions(self):
-        lines = []
-        lines.append("<MaltegoMessage>")
-        lines.append("<MaltegoTransformExceptionMessage>")
-        lines.append("<Exceptions>")
+    def build_exceptions_xml(self):
+        message_xml = Element('MaltegoMessage')
+        exceptions_message_xml = SubElement(message_xml, 'MaltegoTransformExceptionMessage')
+        exceptions_xml = SubElement(exceptions_message_xml, 'Exceptions')
 
         for exception in self.exceptions:
-            lines.append("<Exception>%s</Exception>" % remove_invalid_xml_chars(exception))
+            exception_xml = SubElement(exceptions_xml, 'Exception')
+            exception_xml.text = exception
 
-        lines.append("</Exceptions>")
-        lines.append("</MaltegoTransformExceptionMessage>")
-        lines.append("</MaltegoMessage>")
-        return "".join(lines)
+        return message_xml
+
+    def throwExceptions(self):
+        return serialize_xml(self.build_exceptions_xml())
+
+    def build_xml(self) -> Element:
+        message_xml = Element('MaltegoMessage')
+        response_xml = SubElement(message_xml, 'MaltegoTransformResponseMessage')
+
+        entities_xml = SubElement(response_xml, 'Entities')
+        for entity in self.entities:
+            entities_xml.append(entity.build_xml())
+
+        ui_messages_xml = SubElement(response_xml, 'UIMessages')
+        for ui_message in self.UIMessages:
+            message_type, message_content = ui_message
+
+            ui_message_xml = SubElement(ui_messages_xml, 'UIMessage', attrib={'MessageType': message_type})
+            ui_message_xml.text = message_content
+
+        return message_xml
 
     def returnOutput(self):
-        lines = []
-        lines.append("<MaltegoMessage>")
-        lines.append("<MaltegoTransformResponseMessage>")
-
-        lines.append("<Entities>")
-        for entity in self.entities:
-            lines.append(entity.returnEntity())
-        lines.append("</Entities>")
-
-        lines.append("<UIMessages>")
-        for message in self.UIMessages:
-            type, message = message
-            lines.append(UIM_TEMPLATE % {"text": message, "type": type})
-        lines.append("</UIMessages>")
-
-        lines.append("</MaltegoTransformResponseMessage>")
-        lines.append("</MaltegoMessage>")
-        return "".join(lines)
+        return serialize_xml(self.build_xml())
 
 
 class MaltegoMsg:

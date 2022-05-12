@@ -1,7 +1,10 @@
-import re
-from typing import TypeVar, Callable, Hashable, Iterable, Generator, List, Sequence
-
 import math
+import re
+import sys
+from typing import TypeVar, Callable, Hashable, Iterable, Generator, Sequence
+from xml.etree import ElementTree
+from xml.etree.ElementTree import Element
+
 from six import text_type, binary_type
 
 
@@ -113,3 +116,20 @@ def export_as_csv(header: str, lines: Sequence[str], export_file_path: str, csv_
 
 def serialize_bool(boolean: bool, serialized_true: str, serialized_false: str) -> str:
     return serialized_true if boolean else serialized_false
+
+
+def serialize_xml(xml: Element) -> str:
+    # def _escape_cdata_fix(text: str) -> str:
+    #     if text.startswith('<![CDATA[') and text.endswith(']]>'):
+    #         return text
+#
+    #     return ElementTree._original_escape_cdata(text)
+#
+    # ElementTree._original_escape_cdata = ElementTree._escape_cdata
+    # ElementTree._escape_cdata = _escape_cdata_fix
+    output = ElementTree.tostring(xml)
+
+    if sys.version_info[1] >= 8:
+        output = ElementTree.canonicalize(output)
+
+    return output

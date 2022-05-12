@@ -1,0 +1,8 @@
+<MaltegoMessage>
+    <MaltegoTransformResponseMessage>
+        <Entities></Entities>
+        <UIMessages>
+            <UIMessage MessageType="inform">Test Message</UIMessage>
+        </UIMessages>
+    </MaltegoTransformResponseMessage>
+</MaltegoMessage>
