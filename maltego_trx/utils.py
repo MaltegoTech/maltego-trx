@@ -119,14 +119,6 @@ def serialize_bool(boolean: bool, serialized_true: str, serialized_false: str) -
 
 
 def serialize_xml(xml: Element) -> str:
-    # def _escape_cdata_fix(text: str) -> str:
-    #     if text.startswith('<![CDATA[') and text.endswith(']]>'):
-    #         return text
-#
-    #     return ElementTree._original_escape_cdata(text)
-#
-    # ElementTree._original_escape_cdata = ElementTree._escape_cdata
-    # ElementTree._escape_cdata = _escape_cdata_fix
     output = ElementTree.tostring(xml)
 
     if sys.version_info[1] >= 8:
