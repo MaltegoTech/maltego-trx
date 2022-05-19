@@ -1,10 +1,14 @@
 import os
+import sys
+import zipfile
 from dataclasses import dataclass, field
 from itertools import chain
 from typing import List, Optional, Dict, Iterable
+from xml.etree import ElementTree
 
 from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
     name_to_path
+from maltego_trx.xml import create_local_server_xml, create_settings_xml, create_transform_xml
 
 TRANSFORMS_CSV_HEADER = "Owner,Author,Disclaimer,Description,Version," \
                         "Name,UIName,URL,entityName," \
@@ -93,19 +97,19 @@ class TransformRegistry:
                              self.transform_settings.get(transform_name, [])]
 
             transform_row = [
-                    self.owner,
-                    self.author,
-                    transform_meta.disclaimer,
-                    transform_meta.description,
-                    self.version,
-                    transform_name,
-                    transform_meta.display_name + self.display_name_suffix,
-                    os.path.join(self.host_url, "run", transform_name),
-                    transform_meta.input_entity,
-                    ";".join(self.oauth_settings_id),
-                    # combine global and transform scoped settings
-                    ";".join(chain(meta_settings, global_settings_full_names)),
-                    ";".join(self.seed_ids)
+                self.owner,
+                self.author,
+                transform_meta.disclaimer,
+                transform_meta.description,
+                self.version,
+                transform_name,
+                transform_meta.display_name + self.display_name_suffix,
+                os.path.join(self.host_url, "run", transform_name),
+                transform_meta.input_entity,
+                ";".join(self.oauth_settings_id),
+                # combine global and transform scoped settings
+                ";".join(chain(meta_settings, global_settings_full_names)),
+                ";".join(self.seed_ids)
             ]
 
             escaped_fields = escape_csv_fields(*transform_row)
@@ -121,15 +125,48 @@ class TransformRegistry:
         csv_lines = []
         for setting in unique_settings:
             setting_row = [
-                    setting.id,
-                    setting.setting_type,
-                    setting.display_name,
-                    setting.default_value or "",
-                    serialize_bool(setting.optional, 'True', 'False'),
-                    serialize_bool(setting.popup, 'Yes', 'No')
+                setting.id,
+                setting.setting_type,
+                setting.display_name,
+                setting.default_value or "",
+                serialize_bool(setting.optional, 'True', 'False'),
+                serialize_bool(setting.popup, 'Yes', 'No')
             ]
 
             escaped_fields = escape_csv_fields(*setting_row)
             csv_lines.append(",".join(escaped_fields))
 
         export_as_csv(SETTINGS_CSV_HEADER, csv_lines, config_path, csv_line_limit)
+
+    def write_local_mtz(self,
+                        mtz_path: str,
+                        working_dir: str,
+                        command: str = "python3",
+                        params: str = "project.py",
+                        debug: bool = True):
+        """Creates an .mtz for bulk importing local transforms"""
+        server_xml = create_local_server_xml(self.transform_metas.keys())
+        settings_xml = create_settings_xml(working_dir, command, params, debug)
+
+        with zipfile.ZipFile(mtz_path, "w") as mtz:
+            if sys.version_info.minor >= 9:
+                ElementTree.indent(server_xml)
+                ElementTree.indent(settings_xml)
+
+            server_xml_str = ElementTree.tostring(server_xml)
+            mtz.writestr("Servers/Local.tas", server_xml_str)
+
+            settings_xml_str = ElementTree.tostring(settings_xml)
+
+            for name, meta in self.transform_metas.items():
+                xml = create_transform_xml(name, meta.display_name,
+                                           meta.description, meta.input_entity,
+                                           self.author)
+
+                if sys.version_info.minor >= 9:
+                    ElementTree.indent(xml)
+
+                xml_str = ElementTree.tostring(xml)
+
+                mtz.writestr(f"TransformRepositories/Local/{name}.transform", xml_str)
+                mtz.writestr(f"TransformRepositories/Local/{name}.transformsettings", settings_xml_str)
