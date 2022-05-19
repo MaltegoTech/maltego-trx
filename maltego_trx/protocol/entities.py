@@ -6,7 +6,7 @@ from maltego_trx.utils import pascal_case_to_title
 
 @dataclass
 class MaltegoEntityTypeMeta:
-    namespace: str = 'maltego'
+    namespace: str = None
     name: str = None
 
     display_name: str = None
@@ -54,23 +54,14 @@ class MaltegoEntityType:
 
 
 def generate_meta(class_name: str, base: MaltegoEntityTypeMeta = None) -> MaltegoEntityTypeMeta:
-    base = base or MaltegoEntityTypeMeta()
-    meta = MaltegoEntityTypeMeta()
+    meta = base or MaltegoEntityTypeMeta()
 
-    meta.namespace = base.namespace or "example"
-    meta.name = base.name or class_name
+    meta.name = meta.name or class_name
 
-    meta.display_name = base.display_name or pascal_case_to_title(meta.name)
-    meta.display_name_plural = base.display_name_plural or meta.display_name + "s"
+    meta.display_name = meta.display_name or pascal_case_to_title(meta.name)
+    meta.display_name_plural = meta.display_name_plural or meta.display_name + "s"
 
-    meta.description = base.description or f"A {meta.display_name} entity"
-    meta.category = base.category
-
-    meta.small_icon_resource = base.small_icon_resource
-    meta.large_icon_resource = base.large_icon_resource
-
-    meta.allowed_root = base.allowed_root
-    meta.conversion_order = base.conversion_order
+    meta.description = meta.description or f"A {meta.display_name} entity"
 
     return meta
 
