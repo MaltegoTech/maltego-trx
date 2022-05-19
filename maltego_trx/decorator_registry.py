@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 import zipfile
@@ -144,6 +145,10 @@ class TransformRegistry:
                         command: str = "python3",
                         params: str = "project.py",
                         debug: bool = True):
+        if self.global_settings:
+            logging.warning(f"Settings are not supported with local transforms. "
+                            f"Global settings are: {', '.join(map(lambda s: s.name, self.global_settings))}")
+
         """Creates an .mtz for bulk importing local transforms"""
         server_xml = create_local_server_xml(self.transform_metas.keys())
         settings_xml = create_settings_xml(working_dir, command, params, debug)
@@ -159,6 +164,10 @@ class TransformRegistry:
             settings_xml_str = ElementTree.tostring(settings_xml)
 
             for name, meta in self.transform_metas.items():
+                if tx_settings := self.transform_settings.get(name):
+                    logging.warning("Settings are not supported with local transforms. "
+                                    f"Transform '{meta.display_name}' has: {', '.join(map(lambda s: s.name, tx_settings))}")
+
                 xml = create_transform_xml(name, meta.display_name,
                                            meta.description, meta.input_entity,
                                            self.author)
