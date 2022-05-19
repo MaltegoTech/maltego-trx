@@ -9,7 +9,7 @@ from xml.etree import ElementTree
 
 from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
     name_to_path
-from maltego_trx.xml import create_local_server_xml, create_settings_xml, create_transform_xml
+from maltego_trx.protocol.mtz import create_local_server_xml, create_settings_xml, create_transform_xml
 
 TRANSFORMS_CSV_HEADER = "Owner,Author,Disclaimer,Description,Version," \
                         "Name,UIName,URL,entityName," \
