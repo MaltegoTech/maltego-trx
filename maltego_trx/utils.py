@@ -1,7 +1,7 @@
-import re
-from typing import TypeVar, Callable, Hashable, Iterable, Generator, List, Sequence
-
 import math
+import re
+from typing import TypeVar, Callable, Hashable, Iterable, Generator, Sequence
+
 from six import text_type, binary_type
 
 
@@ -111,5 +111,5 @@ def export_as_csv(header: str, lines: Sequence[str], export_file_path: str, csv_
             csv_file.writelines(map(lambda x: x + "\n", chunk))
 
 
-def serialize_bool(boolean: bool, serialized_true: str, serialized_false: str) -> str:
+def serialize_bool(boolean: bool, serialized_true: str = "true", serialized_false: str = "false") -> str:
     return serialized_true if boolean else serialized_false
