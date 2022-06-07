@@ -1,4 +1,4 @@
-name: 'Runs with Python3.6 - Python3.10'
+name: 'PyTest with Python3.6 - Python3.10'
 
 on: [ push ]
 
