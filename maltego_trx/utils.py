@@ -119,7 +119,8 @@ def serialize_bool(boolean: bool, serialized_true: str, serialized_false: str) -
 
 
 def serialize_xml(xml: Element) -> str:
-    output = ElementTree.tostring(xml)
+    # options are needed to have same xml output for py < 3.8 and py >= 3.8
+    output = ElementTree.tostring(xml, encoding='unicode', short_empty_elements=False)
 
     if sys.version_info[1] >= 8:
         output = ElementTree.canonicalize(output)

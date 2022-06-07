@@ -1,11 +1,5 @@
-import os
-from xml.etree import ElementTree
-
 from maltego_trx.maltego import MaltegoTransform
 from maltego_trx.overlays import OverlayType, OverlayPosition
-from maltego_trx.server import build_exception_message
-
-XML_SAMPLES_DIR = os.path.join(os.path.dirname(__file__), 'xml_samples')
 
 
 def test_entity_with_value(snapshot):
@@ -78,9 +72,8 @@ def test_response_with_exception(snapshot):
 
 
 def test_exception_message(snapshot):
-    response_xml = build_exception_message("Test Exception")
+    transform_run = MaltegoTransform()
+    transform_run.addUIMessage("Test Exception", "PartialError")
+    response_xml = transform_run.returnOutput()
 
-    response_xml_canonicalize = ElementTree.tostring(response_xml, short_empty_elements=False)
-    response_xml_canonicalize = ElementTree.canonicalize(response_xml_canonicalize)
-
-    assert response_xml_canonicalize == snapshot
+    assert response_xml == snapshot
