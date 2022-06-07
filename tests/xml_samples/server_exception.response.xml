@@ -1,9 +1,0 @@
-<MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-        <UIMessages>
-            <UIMessage MessageType='PartialError'>
-                Test Exception
-            </UIMessage>
-        </UIMessages>
-    </MaltegoTransformResponseMessage>
-</MaltegoMessage>

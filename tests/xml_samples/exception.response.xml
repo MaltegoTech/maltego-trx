@@ -1,7 +1,0 @@
-<MaltegoMessage>
-    <MaltegoTransformExceptionMessage>
-        <Exceptions>
-            <Exception>Test Exception</Exception>
-        </Exceptions>
-    </MaltegoTransformExceptionMessage>
-</MaltegoMessage>

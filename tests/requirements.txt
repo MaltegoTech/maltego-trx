@@ -1,3 +1,4 @@
-pytest==6.2.4
+pytest==7.1.2
+syrupy==2.3.0
 
 petname==2.6
