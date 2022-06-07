@@ -3,7 +3,7 @@ name: 'Runs with Python3.6 - Python3.10'
 on: [ push ]
 
 jobs:
-  boots:
+  pytest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,8 +23,8 @@ jobs:
           pip install wheel
           pip3 install .
 
-      - name: Create starter Project
+      - name: Run PyTest
         run: |
-          maltego-trx start test
-          cd test
-          python3 project.py list
+          cd tests
+          pip install -r requirements.txt
+          pytest
