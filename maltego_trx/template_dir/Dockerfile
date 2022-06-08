@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.10-slim
 
 RUN apt-get update && apt-get upgrade --yes
 RUN apt-get autoremove && apt-get clean
