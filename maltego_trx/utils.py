@@ -26,8 +26,8 @@ def make_utf8(val):
 
 def make_printable(val):
     """
-    Py2: makes variable a ascii encoded Unicode type
-    Py3: make variable a ascii encoded str type
+    Py2: makes variable an ascii encoded Unicode type
+    Py3: make variable an ascii encoded str type
     :param val: the variable we want unicode encoded
     :return: val {Byte/Unicode}
     """

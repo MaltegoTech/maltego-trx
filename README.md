@@ -325,6 +325,7 @@ from maltego_trx.maltego import MaltegoTransform
 
 
 def old_transform(m):
+    ...
 ```
 
 In the `project.py` file add the following:

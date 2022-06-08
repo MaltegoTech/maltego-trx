@@ -1,4 +1,4 @@
-import uuid;
+import uuid
 from xml.dom import minidom
 from xml.etree.ElementTree import Element, SubElement
 

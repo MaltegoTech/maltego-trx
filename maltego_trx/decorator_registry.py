@@ -84,7 +84,7 @@ class TransformRegistry:
         return decorated
 
     def write_transforms_config(self, config_path: str = "./transforms.csv", csv_line_limit: int = 100):
-        """Exports the collected transform meta data as a csv-file to config_path"""
+        """Exports the collected transform metadata as a csv-file to config_path"""
         global_settings_full_names = [gs.id for gs in self.global_settings]
 
         csv_lines = []
@@ -114,7 +114,7 @@ class TransformRegistry:
         export_as_csv(TRANSFORMS_CSV_HEADER, csv_lines, config_path, csv_line_limit)
 
     def write_settings_config(self, config_path: str = "./settings.csv", csv_line_limit: int = 100):
-        """Exports the collected settings meta data as a csv-file to config_path"""
+        """Exports the collected settings metadata as a csv-file to config_path"""
         chained_settings = chain(self.global_settings, *list(self.transform_settings.values()))
         unique_settings: Iterable[TransformSetting] = filter_unique(lambda s: s.name, chained_settings)
 
