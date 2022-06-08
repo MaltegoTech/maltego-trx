@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.10-slim
 
 RUN apt-get update && apt-get upgrade --yes
 RUN apt-get autoremove && apt-get clean
@@ -20,4 +20,4 @@ USER www-data
 EXPOSE 8080
 ENTRYPOINT ["gunicorn"]
 # For ssl, add "--bind=0.0.0.0:8443 --certfile=server.crt --keyfile=server.key"
-CMD ["--bind=0.0.0.0:8080", "--workers", "3", "-k", "gevent", "project:app"]
+CMD ["--bind=0.0.0.0:8080", "--workers", "3", "-k", "gevent", "project:application"]
