@@ -27,7 +27,10 @@ setup(
     package_data={
         'maltego_trx/template_dir': [
             'settings.csv',
-            'transforms.csv'
+            'transforms.csv',
+            'docker-compose.yml',
+            'Dockerfile',
+            'requirements.txt',
         ]
     },
     entry_points={
