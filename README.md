@@ -5,6 +5,7 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+
 __1.5.0__: XML Serialization via `ElementTree` instead of string interpolation
 
 __1.4.4__: Added skeletons for csv export in template dir and made project.py application import compatible with docs
@@ -31,6 +32,12 @@ maltego-trx start new_project
 ```
 
 This will create a folder new_project with the recommended project structure.
+
+If you want to copy the starter files to your current directory, run the following command:
+
+```bash
+maltego-trx init
+```
 
 Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. These also
 include Dockerfile and corresponding docker-compose configuration files for production deployment.
@@ -150,10 +157,10 @@ creating your registry in an extra file, traditionally called `extensions.py`, t
 from maltego_trx.decorator_registry import TransformRegistry
 
 registry = TransformRegistry(
-        owner="ACME Corporation",
-        author="John Doe <johndoe@acme.com>",
-        host_url="https://transforms.acme.org",
-        seed_ids=["demo"]
+    owner="ACME Corporation",
+    author="John Doe <johndoe@acme.com>",
+    host_url="https://transforms.acme.org",
+    seed_ids=["demo"]
 )
 
 # The rest of these attributes are optional
@@ -178,11 +185,11 @@ from extensions import registry
 
 
 @registry.register_transform(
-        display_name='Greet Person',
-        input_entity='maltego.Phrase',
-        description='Returns a phrase greeting a person on the graph.',
-        output_entities=['maltego.Phrase'],
-        disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
+    display_name='Greet Person',
+    input_entity='maltego.Phrase',
+    description='Returns a phrase greeting a person on the graph.',
+    output_entities=['maltego.Phrase'],
+    disclaimer='This disclaimer is optional and has to be accepted before this transform is run'
 )
 class GreetPerson(DiscoverableTransform):
 
@@ -222,10 +229,10 @@ from settings import api_key_setting
 from maltego_trx.decorator_registry import TransformRegistry
 
 registry = TransformRegistry(
-        owner="ACME Corporation",
-        author="John Doe <johndoe@acme.com>",
-        host_url="https://transforms.acme.org",
-        seed_ids=["demo"]
+    owner="ACME Corporation",
+    author="John Doe <johndoe@acme.com>",
+    host_url="https://transforms.acme.org",
+    seed_ids=["demo"]
 )
 
 registry.global_settings = [api_key_setting]
