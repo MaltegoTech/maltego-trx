@@ -1,15 +1,17 @@
 # Maltego TRX Python Library
 
 [![Runs with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
-
+[![PyTest with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml)
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
-__1.4.4__: Added skeletons for csv export in template dir and made project.py app import compatible with docs
+__1.5.0__: XML Serialization via `ElementTree` instead of string interpolation
+
+__1.4.4__: Added skeletons for csv export in template dir and made project.py application import compatible with docs
 
 __1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower.
 
-__1.4.2__: Fixed python3.6 incomptibility
+__1.4.2__: Fixed python3.6 incompatibility
 
 ## Getting Started
 
@@ -71,14 +73,14 @@ You can start the development server, by running the following command:
 python project.py runserver
 ```
 
-This will startup a development server that automatically reloads every time the code is changed.
+This will start up a development server that automatically reloads every time the code is changed.
 
 ### For Production
 
 You can run a gunicorn transform server, after installing gunicorn on the host machine and then running the command:
 
 ``` bash
-gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app
+gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:application
 ```
 
 *For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
@@ -88,7 +90,7 @@ gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:app
 The `demo` folder provides an example project. The Docker files given can be used to set up and run your project in
 Docker.
 
-The Dockerfile and docker-compose file can be used to easily setup and run a development transform server.
+The Dockerfile and docker-compose file can be used to easily set up and run a development transform server.
 
 If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the
 following commands to run the server in Docker.
@@ -279,7 +281,7 @@ import sys
 import transforms
 
 from maltego_trx.registry import register_transform_function, register_transform_classes
-from maltego_trx.server import app, application
+from maltego_trx.server import application
 from maltego_trx.handler import handle_run
 
 # register_transform_function(transform_func)
@@ -290,7 +292,7 @@ register_transform_classes(transforms)
 registry.write_transforms_config()
 registry.write_settings_config()
 
-handle_run(__name__, sys.argv, app)
+handle_run(__name__, sys.argv, application)
 ```
 
 ## Legacy Transforms
@@ -323,6 +325,7 @@ from maltego_trx.maltego import MaltegoTransform
 
 
 def old_transform(m):
+    ...
 ```
 
 In the `project.py` file add the following:

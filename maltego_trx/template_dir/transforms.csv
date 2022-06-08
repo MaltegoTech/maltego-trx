@@ -1,0 +1,4 @@
+Owner,Author,Disclaimer,Description,Version,Name,UIName,URL,entityName,oAuthSettingId,transformSettingIDs,seedIDs
+ACME Corporation,John Doe <johndoe@acme.com>,,"Receive DNS name from the Client, and resolve to IP address.",0.1,dnstoip,DNS to IP,https://transforms.acme.com/run/dnstoip,maltego.DNSName,,,demo
+ACME Corporation,John Doe <johndoe@acme.com>,,Returns a Phrase greeting a Person on the Graph.,0.1,greetperson,Greet Person,https://transforms.acme.com/run/greetperson,maltego.Phrase,,,demo
+ACME Corporation,John Doe <johndoe@acme.com>,,Returns a phrase with overlays on the graph.,0.1,overlayexample,Overlay Example,https://transforms.acme.com/run/overlayexample,maltego.Person,,,demo

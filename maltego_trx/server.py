@@ -1,29 +1,22 @@
 import logging
 
 from flask import Flask, request
-from maltego_trx.maltego import MaltegoMsg
+
+from .maltego import MaltegoMsg, MaltegoTransform
 from .registry import mapping
 
 log = logging.getLogger("maltego.server")
 logging.basicConfig(level=logging.DEBUG)
-
 
 URL_TEMPLATE = '/run/<transform_name>/'
 URL_TEMPLATE_NO_SLASH = '/run/<transform_name>'
 
 
 def get_exception_message(msg="An exception occurred with the transform. Check the logs for more details."):
-    return """<MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-        <Entities>
-        </Entities>
-        <UIMessages>
-            <UIMessage MessageType='PartialError'>
-                %s
-            </UIMessage>
-        </UIMessages>
-    </MaltegoTransformResponseMessage>
-</MaltegoMessage>""" % msg
+    transform_run = MaltegoTransform()
+    transform_run.addUIMessage(msg, "PartialError")
+
+    return transform_run.returnOutput()
 
 
 def print_transforms():

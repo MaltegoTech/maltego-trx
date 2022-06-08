@@ -1,12 +1,12 @@
 from maltego_trx import VERSION
-from .server import print_transforms, run_transform, get_exception_message
-from .registry import mapping
 from .maltego import MaltegoMsg
-
+from .registry import mapping
+from .server import print_transforms, run_transform, get_exception_message
 
 """
 Receive commands run inside a project folder.
 """
+
 
 def handle_run(name, args, app, port=8080, ssl_context=None, debug=False):
     if name == "__main__":
@@ -29,4 +29,3 @@ def handle_run(name, args, app, port=8080, ssl_context=None, debug=False):
         else:
             commands = ["list", "local", "runserver"]
             print("Command not recognised. Available commands are:\r\n{0}".format("\r\n".join(commands)))
-

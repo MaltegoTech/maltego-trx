@@ -1,7 +1,10 @@
-import re
-from typing import TypeVar, Callable, Hashable, Iterable, Generator, List, Sequence
-
 import math
+import re
+import sys
+from typing import TypeVar, Callable, Hashable, Iterable, Generator, Sequence
+from xml.etree import ElementTree
+from xml.etree.ElementTree import Element
+
 from six import text_type, binary_type
 
 
@@ -23,8 +26,8 @@ def make_utf8(val):
 
 def make_printable(val):
     """
-    Py2: makes variable a ascii encoded Unicode type
-    Py3: make variable a ascii encoded str type
+    Py2: makes variable an ascii encoded Unicode type
+    Py3: make variable an ascii encoded str type
     :param val: the variable we want unicode encoded
     :return: val {Byte/Unicode}
     """
@@ -113,3 +116,13 @@ def export_as_csv(header: str, lines: Sequence[str], export_file_path: str, csv_
 
 def serialize_bool(boolean: bool, serialized_true: str, serialized_false: str) -> str:
     return serialized_true if boolean else serialized_false
+
+
+def serialize_xml(xml: Element) -> str:
+    # options are needed to have same xml output for py < 3.8 and py >= 3.8
+    output = ElementTree.tostring(xml, encoding='unicode', short_empty_elements=False)
+
+    if sys.version_info[1] >= 8:
+        output = ElementTree.canonicalize(output)
+
+    return output

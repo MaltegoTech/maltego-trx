@@ -43,7 +43,7 @@ class MaltegoOauth:
         """
         key = base64.b64decode(key)
         cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
-        decryptor = cipher.decryptor();
+        decryptor = cipher.decryptor()
         ciphertext = base64.b64decode(ciphertext)
         padded_b64_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
         unpadder = primitives_padding.PKCS7(128).unpadder()
