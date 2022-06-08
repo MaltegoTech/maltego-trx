@@ -5,6 +5,7 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+__1.5.1__: Add ignored files to starter and use README for pypi
 
 __1.5.0__: XML Serialization via `ElementTree` instead of string interpolation
 
