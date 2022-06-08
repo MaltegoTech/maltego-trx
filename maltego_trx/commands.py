@@ -14,16 +14,22 @@ def execute_from_command_line():
 
     if args[0].lower() == "start":
         run_start(args[1:])
+    elif args[0].lower() == "init":
+        run_start([], create_dir=False)
     else:
         print("Command not recognised. Available commands are: \n 'start'")
 
 
-def run_start(args):
-    project = args[0]
-    project_dir = os.path.join(os.getcwd(), project)
+def run_start(args, create_dir: bool = True):
+    if create_dir:
+        project = args[0]
+        project_dir = os.path.join(os.getcwd(), project)
+        os.makedirs(project_dir)
+    else:
+        project_dir = os.getcwd()
+        project = os.path.basename(project_dir)
 
     try:
-        os.makedirs(project_dir)
         template_dir_path = os.path.join(maltego_trx.__path__[0], "template_dir")
         copytree(template_dir_path, project_dir)
         print("Successfully created a new project in the '%s' folder." % project)
