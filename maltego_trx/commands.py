@@ -17,7 +17,7 @@ def execute_from_command_line():
     elif args[0].lower() == "init":
         run_start([], create_dir=False)
     else:
-        print("Command not recognised. Available commands are: \n 'start'")
+        print("Command not recognised. Available commands are: \n 'start <project_name>' \n 'init'")
 
 
 def run_start(args, create_dir: bool = True):
