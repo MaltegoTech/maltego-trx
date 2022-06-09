@@ -5,6 +5,7 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+
 __1.5.1__: Add ignored files to starter and use README for pypi
 
 __1.5.0__: XML Serialization via `ElementTree` instead of string interpolation
@@ -15,7 +16,7 @@ __1.4.0 + 1.4.1:__ Both versions are incompatible with python3.7 and lower.
 
 __1.4.2__: Fixed python3.6 incompatibility
 
-## Getting Started
+## Installation
 
 _Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use
 up-to-date versions of Maltego TRX._
@@ -26,29 +27,28 @@ To install the trx library run the following command:
 pip install maltego-trx
 ```
 
-After installing, you can create a new project by running the following command:
+## Getting Started
+
+You can create a new project by running the following command:
 
 ``` bash
-maltego-trx start new_project
+maltego-trx start <new_project>
 ```
 
-This will create a folder new_project with the recommended project structure.
+This will create a folder `new_project` with the recommended project structure.
 
-If you want to copy the starter files to your current directory, run the following command:
+If you want to copy the starter files to your current directory instead, run the following command:
 
 ```bash
 maltego-trx init
 ```
 
-Alternatively, you can copy either the `gunicorn` or `apache` example projects from the `demo` directory. These also
-include Dockerfile and corresponding docker-compose configuration files for production deployment.
+### Adding a Transform
 
-**Adding a Transform:**
+Creating a new python file in the `transforms` folder of your directory.
 
-Add a new transform by creating a new python file in the "transforms" folder of your directory.
-
-Any file in the folder where the **class name matches the filename**, and the class inherits from Transform, will
-automatically be discovered and added to your server.
+Any file in the folder where the **class name matches the filename**, and the class inherits
+from `DiscoverableTransform`, will automatically be discovered and added to your server.
 
 A simple transform would look like the following:
 
@@ -68,10 +68,10 @@ class GreetPerson(DiscoverableTransform):
     def create_entities(cls, request, response):
         person_name = request.Value
 
-        response.addEntity(Phrase, "Hi %s, nice to meet you!" % person_name)
+        response.addEntity(Phrase, f"Hi {person_name}, nice to meet you!")
 ```
 
-## Running The Transform Server
+## Running the Transform Server
 
 ### For Development
 
@@ -93,26 +93,28 @@ gunicorn --bind=0.0.0.0:8080 --threads=25 --workers=2 project:application
 
 *For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
 
-## Run a Docker Transform server
+## Run a Docker Transform Server
 
-The `demo` folder provides an example project. The Docker files given can be used to set up and run your project in
-Docker.
+### Development
 
-The Dockerfile and docker-compose file can be used to easily set up and run a development transform server.
+The starter files should already contain a `Dockerfile` and `docker-compose.yml` file.
 
-If you have copied the `docker-compose.yml`, `Dockerfile` and `prod.yml` files into your project, then you can use the
+### Production
+
+The `deployments` sub folders provide the necessary files for running a production server with
+either `Apache` or `gunicorn` behind `nginx`.
+
+After copying all files into your project directory, you can use the
 following commands to run the server in Docker.
-
-Run the following to start the development server:
 
 ``` bash
 docker-compose up
 ```
 
-Run the following command to run a production gunicorn server:
+For `gunicorn`, there is an extra file to run gunicorn behind `nginx`
 
 ``` bash
-docker-compose -f prod.yml up --build
+docker-compose -f production.docker-compose.yml up --build
 ```
 
 *For publicly accessible servers, it is recommended to run your Gunicorn server behind proxy servers such as Nginx.*
@@ -121,15 +123,17 @@ docker-compose -f prod.yml up --build
 
 [Documentation](https://docs.maltego.com/support/solutions/articles/15000017605-writing-local-transforms-in-python)
 
-Transforms written using this library can be used as either local or server transforms.
+Transforms written using this library can be used as either as local transforms or as a server behind an iTDS.
 
 To run a local transform from your project, you will need to pass the following arguments:
+You can find the correct transform_name to use by running `python project.py list`.
 
 ``` bash
-project.py local <transform_name>
+project.py local <transform_name> <value>
 ```
 
-You can find the correct transform_name to use by running `python project.py list`.
+However, we do not recommend using the CLI but instead registering it with your Maltego client.
+[Adding the Transform to Maltego](https://docs.maltego.com/support/solutions/articles/15000017605-local-transforms-example-#adding-the-transform-to-maltego-0-6)
 
 ### Caveats
 
@@ -138,7 +142,7 @@ The following values are not passed to local transforms, and will have dummy val
 - `type`: `local.Unknown`
 - `weight`: 100
 - `slider`: 100
-- `transformSettings`: {}
+- `transformSettings`: `{}`
 
 ## Using the Transform Registry
 
