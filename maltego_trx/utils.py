@@ -1,6 +1,7 @@
 import math
 import re
 import sys
+import warnings
 from typing import TypeVar, Callable, Hashable, Iterable, Generator, Sequence
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
@@ -126,3 +127,18 @@ def serialize_xml(xml: Element) -> str:
         output = ElementTree.canonicalize(output)
 
     return output
+
+
+# https://stackoverflow.com/a/48632082
+def deprecated(message="This function is deprecated. Use 'make_utf8' instead."):
+    def deprecated_decorator(func):
+        def deprecated_func(*args, **kwargs):
+            warnings.warn("{} is a deprecated function. {}".format(func.__name__, message),
+                          category=DeprecationWarning,
+                          stacklevel=2)
+            warnings.simplefilter('default', DeprecationWarning)
+            return func(*args, **kwargs)
+
+        return deprecated_func
+
+    return deprecated_decorator

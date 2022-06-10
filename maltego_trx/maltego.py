@@ -1,10 +1,11 @@
+import logging
 import uuid
 from xml.dom import minidom
 from xml.etree.ElementTree import Element, SubElement
 
 from .entities import Phrase, translate_legacy_property_name, entity_property_map
 from .overlays import OverlayPosition, OverlayType
-from .utils import remove_invalid_xml_chars, serialize_xml
+from .utils import remove_invalid_xml_chars, serialize_xml, deprecated
 
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
@@ -73,7 +74,7 @@ class MaltegoEntity(object):
             self.weight = weight
 
     def addDisplayInformation(self, content=None, title='Info'):
-        if content:
+        if content and title:
             self.displayInformation.append([title, content])
 
     def addProperty(self, fieldName=None, displayName=None, matchingRule='loose', value=None):
@@ -99,7 +100,8 @@ class MaltegoEntity(object):
         self.addProperty('link#maltego.link.direction', 'link#maltego.link.direction', 'loose', 'output-to-input')
 
     def addCustomLinkProperty(self, fieldName=None, displayName=None, value=None):
-        self.addProperty('link#' + fieldName, displayName, '', value)
+        if fieldName:
+            self.addProperty('link#' + fieldName, displayName, '', value)
 
     def setBookmark(self, bookmark):
         self.addProperty('bookmark#', 'Bookmark', '', bookmark)
@@ -112,6 +114,7 @@ class MaltegoEntity(object):
     ):
         self.overlays.append([propertyName, position.value, overlayType.value])
 
+    @deprecated()
     def add_field_to_xml(self, additional_field):
         name, display, matching, value = additional_field
         matching = "strict" if matching.lower().strip() == "strict" else "loose"
@@ -123,6 +126,7 @@ class MaltegoEntity(object):
             "value": remove_invalid_xml_chars(value),
         }
 
+    @deprecated()
     def disp_info_to_xml(self, disp_info):
         name, content = disp_info
 
@@ -145,6 +149,10 @@ class MaltegoEntity(object):
             for display_info in self.displayInformation:
                 title, content = display_info
 
+                if not all((title, content)):
+                    logging.warning(f"Display information is missing a title or content: {title=}, {content=}")
+                    continue
+
                 display_info_xml = SubElement(display_infos_xml, 'Label', attrib={'Name': title, 'Type': "text/html"})
                 # for some reason, the client accepts escaped html and renders it correctly, so we don't need CDATA
                 display_info_xml.text = str(content)
@@ -153,6 +161,12 @@ class MaltegoEntity(object):
             properties_xml = SubElement(entity_xml, 'AdditionalFields')
             for prop in self.additionalFields:
                 title, display, matching, val = prop
+
+                if not all((title, display, matching, val)):
+                    logging.warning(f"Additional field is missing a title, display, matching or value: "
+                                    f"{title=}, {display=}, {matching=}, {val=}")
+                    continue
+
                 matching = "strict" if matching.lower().strip() == "strict" else "loose"
 
                 field_xml = SubElement(properties_xml, 'Field',
@@ -166,8 +180,13 @@ class MaltegoEntity(object):
             for overlay in self.overlays:
                 property_name, position, overlay_type = overlay
 
+                if not all((property_name, position, overlay_type)):
+                    logging.warning(f"Overlay is missing a property name, position or type: "
+                                    f"{property_name=}, {position=}, {overlay_type=}")
+                    continue
+
                 SubElement(overlays_xml, 'Overlay',
-                           attrib={'propertyName': property_name,
+                           attrib={'propertyName': str(property_name),
                                    'position': position,
                                    'type': overlay_type})
 
@@ -223,6 +242,9 @@ class MaltegoTransform(object):
         ui_messages_xml = SubElement(response_xml, 'UIMessages')
         for ui_message in self.UIMessages:
             message_type, message_content = ui_message
+            if not all((message_type, message_content)):
+                logging.warning(f"UIMessage is missing a message type or content: {message_type=}, {message_content=}")
+                continue
 
             ui_message_xml = SubElement(ui_messages_xml, 'UIMessage', attrib={'MessageType': message_type})
             ui_message_xml.text = message_content

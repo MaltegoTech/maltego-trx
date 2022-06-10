@@ -77,3 +77,32 @@ def test_exception_message(snapshot):
     response_xml = transform_run.returnOutput()
 
     assert response_xml == snapshot
+
+
+def test_all_null_values():
+    response = MaltegoTransform()
+    entity = response.addEntity(None, None)
+    entity.addProperty(fieldName=None, displayName=None, value=None,
+                       matchingRule=None)
+
+    entity.addDisplayInformation(title=None, content=None)
+    entity.setIconURL(url=None)
+
+    entity.addOverlay(propertyName=None, position=OverlayPosition.NORTH_WEST, overlayType=OverlayType.COLOUR)
+
+    entity.setLinkLabel(None)
+    entity.setLinkThickness(None)
+    entity.setLinkColor(None)
+    entity.setLinkStyle(None)
+    entity.setType(None)
+    entity.setWeight(None)
+    entity.addCustomLinkProperty(None, None, None)
+    entity.setNote(None)
+    entity.setValue(None)
+
+    response.addUIMessage(None, messageType=None)
+    response.addException(None)
+
+    response_xml = response.returnOutput()
+
+    assert response_xml
