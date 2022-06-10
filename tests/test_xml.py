@@ -79,7 +79,7 @@ def test_exception_message(snapshot):
     assert response_xml == snapshot
 
 
-def test_all_null_values():
+def test_all_null_values(caplog, snapshot):
     response = MaltegoTransform()
     entity = response.addEntity(None, None)
     entity.addProperty(fieldName=None, displayName=None, value=None,
@@ -104,5 +104,7 @@ def test_all_null_values():
     response.addException(None)
 
     response_xml = response.returnOutput()
-
     assert response_xml
+
+    captured = caplog.text
+    assert captured == snapshot
