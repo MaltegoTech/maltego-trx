@@ -106,5 +106,5 @@ def test_all_null_values(caplog, snapshot):
     response_xml = response.returnOutput()
     assert response_xml
 
-    captured = caplog.text
+    captured = caplog.messages
     assert captured == snapshot

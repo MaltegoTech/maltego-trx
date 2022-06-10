@@ -1,15 +1,14 @@
 # name: test_all_null_values
-  '''
-  WARNING  root:maltego.py:166 Additional field is missing a title, display, matching or value: title=None, display=None, matching=None, val=None
-  WARNING  root:maltego.py:166 Additional field is missing a title, display, matching or value: title=link#maltego.link.label, display=Label, matching=, val=None
-  WARNING  root:maltego.py:166 Additional field is missing a title, display, matching or value: title=link#maltego.link.thickness, display=Thickness, matching=, val=None
-  WARNING  root:maltego.py:166 Additional field is missing a title, display, matching or value: title=link#maltego.link.color, display=LinkColor, matching=, val=None
-  WARNING  root:maltego.py:166 Additional field is missing a title, display, matching or value: title=link#maltego.link.style, display=LinkStyle, matching=, val=None
-  WARNING  root:maltego.py:166 Additional field is missing a title, display, matching or value: title=notes#, display=Notes, matching=, val=None
-  WARNING  root:maltego.py:184 Overlay is missing a property name, position or type: property_name=None, position=NW, overlay_type=colour
-  WARNING  root:maltego.py:246 UIMessage is missing a message type or content: message_type=None, message_content=None
-  
-  '''
+  list([
+    'Additional field is missing a title, display, matching or value: title=None, display=None, matching=None, val=None',
+    'Additional field is missing a title, display, matching or value: title=link#maltego.link.label, display=Label, matching=, val=None',
+    'Additional field is missing a title, display, matching or value: title=link#maltego.link.thickness, display=Thickness, matching=, val=None',
+    'Additional field is missing a title, display, matching or value: title=link#maltego.link.color, display=LinkColor, matching=, val=None',
+    'Additional field is missing a title, display, matching or value: title=link#maltego.link.style, display=LinkStyle, matching=, val=None',
+    'Additional field is missing a title, display, matching or value: title=notes#, display=Notes, matching=, val=None',
+    'Overlay is missing a property name, position or type: property_name=None, position=NW, overlay_type=colour',
+    'UIMessage is missing a message type or content: message_type=None, message_content=None',
+  ])
 # ---
 # name: test_entity_with_display_information
   '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><DisplayInformation><Label Name="Display Info Title" Type="text/html">&lt;p&gt;Display Info Content&lt;/p&gt;</Label></DisplayInformation></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
