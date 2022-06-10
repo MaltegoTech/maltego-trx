@@ -150,7 +150,8 @@ class MaltegoEntity(object):
                 title, content = display_info
 
                 if not all((title, content)):
-                    logging.warning(f"Display information is missing a title or content: {title=}, {content=}")
+                    logging.warning(f"Display information is missing a title or content: "
+                                    f"title={title}, content={content}")
                     continue
 
                 display_info_xml = SubElement(display_infos_xml, 'Label', attrib={'Name': title, 'Type': "text/html"})
@@ -164,7 +165,7 @@ class MaltegoEntity(object):
 
                 if not all((title, display, matching, val)):
                     logging.warning(f"Additional field is missing a title, display, matching or value: "
-                                    f"{title=}, {display=}, {matching=}, {val=}")
+                                    f"title={title}, display={display}, matching={matching}, val={val}")
                     continue
 
                 matching = "strict" if matching.lower().strip() == "strict" else "loose"
@@ -182,7 +183,7 @@ class MaltegoEntity(object):
 
                 if not all((property_name, position, overlay_type)):
                     logging.warning(f"Overlay is missing a property name, position or type: "
-                                    f"{property_name=}, {position=}, {overlay_type=}")
+                                    f"property_name={property_name}, position={position}, overlay_type={overlay_type}")
                     continue
 
                 SubElement(overlays_xml, 'Overlay',
@@ -243,7 +244,8 @@ class MaltegoTransform(object):
         for ui_message in self.UIMessages:
             message_type, message_content = ui_message
             if not all((message_type, message_content)):
-                logging.warning(f"UIMessage is missing a message type or content: {message_type=}, {message_content=}")
+                logging.warning(f"UIMessage is missing a message type or content: "
+                                f"message_type={message_type}, message_content={message_content}")
                 continue
 
             ui_message_xml = SubElement(ui_messages_xml, 'UIMessage', attrib={'MessageType': message_type})
