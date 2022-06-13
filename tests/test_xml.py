@@ -10,10 +10,76 @@ def test_entity_with_value(snapshot):
     assert response_xml == snapshot
 
 
+def test_entity_with_none_value(caplog, snapshot):
+    response = MaltegoTransform()
+    response.addEntity("maltego.Phrase", None)
+    response_xml = response.returnOutput()
+
+    assert response_xml == snapshot
+
+    captured = caplog.messages
+    assert captured == snapshot
+
+
+def test_entity_with_none_type_is_phrase(caplog, snapshot):
+    response = MaltegoTransform()
+    response.addEntity(None, "Value")
+    response_xml = response.returnOutput()
+
+    assert response_xml == snapshot
+
+    captured = caplog.messages
+    assert captured == snapshot
+
+
+def test_entity_property_with_no_field_name_gets_skipped(caplog, snapshot):
+    response = MaltegoTransform()
+    entity = response.addEntity("maltego.Phrase", "Hello Spencer!")
+    entity.addProperty(fieldName=None, displayName="displayNameTest", value="valueTest",
+                       matchingRule="loose")
+
+    response_xml = response.returnOutput()
+
+    assert response_xml == snapshot
+
+    captured = caplog.messages
+    assert captured == snapshot
+
+
+def test_entity_property_with_no_display_name_gets_field_name(snapshot):
+    response = MaltegoTransform()
+    entity = response.addEntity("maltego.Phrase", "Hello Spencer!")
+    entity.addProperty(fieldName="fieldNameTest", displayName=None, value="valueTest",
+                       matchingRule="loose")
+
+    response_xml = response.returnOutput()
+
+    assert response_xml == snapshot
+
+
+def test_entity_property_with_no_matching_rule_gets_loose_matching_rule(snapshot):
+    response = MaltegoTransform()
+    entity = response.addEntity("maltego.Phrase", "Hello Spencer!")
+    entity.addProperty(fieldName="fieldNameTest", displayName="displayNameTest", matchingRule=None, value="valueTest")
+
+    response_xml = response.returnOutput()
+    assert response_xml == snapshot
+
+
+def test_entity_property_with_no_value_gets_empty_value(caplog, snapshot):
+    response = MaltegoTransform()
+    entity = response.addEntity("maltego.Phrase", "Hello Spencer!")
+    entity.addProperty(fieldName="fieldNameTest", displayName="displayNameTest", value=None, matchingRule="loose")
+
+    response_xml = response.returnOutput()
+
+    assert response_xml == snapshot
+
+
 def test_entity_with_properties(snapshot):
     response = MaltegoTransform()
     entity = response.addEntity("maltego.Phrase", "Hello Spencer!")
-    entity.addProperty(fieldName="fieldNameTest", displayName="displayNameTest", value="valueTest",
+    entity.addProperty(fieldName="fieldNameTest", displayName=None, value="valueTest",
                        matchingRule="loose")
     entity.addProperty(fieldName="fieldNameTest2", displayName="displayNameTest2", value="valueTest2",
                        matchingRule="strict")
@@ -104,7 +170,7 @@ def test_all_null_values(caplog, snapshot):
     response.addException(None)
 
     response_xml = response.returnOutput()
-    assert response_xml
+    assert response_xml == snapshot
 
     captured = caplog.messages
     assert captured == snapshot

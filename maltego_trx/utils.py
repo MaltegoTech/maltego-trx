@@ -1,3 +1,4 @@
+import logging
 import math
 import re
 import sys
@@ -8,6 +9,7 @@ from xml.etree.ElementTree import Element
 
 from six import text_type, binary_type
 
+logger = logging.getLogger("maltego-trx")
 
 def name_to_path(name):
     # Convert function name to a URL path
