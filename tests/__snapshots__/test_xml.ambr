@@ -1,30 +1,5 @@
 # name: test_all_null_values
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value></Value>
-          <Weight>100</Weight>
-          <AdditionalFields>
-            <Field DisplayName="None" MatchingRule="loose" Name="None"></Field>
-            <Field DisplayName="Label" MatchingRule="loose" Name="link#maltego.link.label"></Field>
-            <Field DisplayName="Thickness" MatchingRule="loose" Name="link#maltego.link.thickness">None</Field>
-            <Field DisplayName="LinkColor" MatchingRule="loose" Name="link#maltego.link.color"></Field>
-            <Field DisplayName="LinkStyle" MatchingRule="loose" Name="link#maltego.link.style"></Field>
-            <Field DisplayName="Notes" MatchingRule="loose" Name="notes#"></Field>
-          </AdditionalFields>
-          <Overlays>
-            <Overlay position="NW" propertyName="None" type="colour"></Overlay>
-          </Overlays>
-        </Entity>
-      </Entities>
-      <UIMessages>
-        <UIMessage MessageType="Inform">None</UIMessage>
-      </UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value></Value><Weight>100</Weight><AdditionalFields><Field DisplayName="None" MatchingRule="loose" Name="None"></Field><Field DisplayName="Label" MatchingRule="loose" Name="link#maltego.link.label"></Field><Field DisplayName="Thickness" MatchingRule="loose" Name="link#maltego.link.thickness">None</Field><Field DisplayName="LinkColor" MatchingRule="loose" Name="link#maltego.link.color"></Field><Field DisplayName="LinkStyle" MatchingRule="loose" Name="link#maltego.link.style"></Field><Field DisplayName="Notes" MatchingRule="loose" Name="notes#"></Field></AdditionalFields><Overlays><Overlay position="NW" propertyName="None" type="colour"></Overlay></Overlays></Entity></Entities><UIMessages><UIMessage MessageType="Inform">None</UIMessage></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_all_null_values.1
   list([
@@ -36,40 +11,10 @@
   ])
 # ---
 # name: test_entity_property_with_no_display_name_gets_field_name
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <AdditionalFields>
-            <Field DisplayName="fieldNameTest" MatchingRule="loose" Name="fieldNameTest">valueTest</Field>
-          </AdditionalFields>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><AdditionalFields><Field DisplayName="fieldNameTest" MatchingRule="loose" Name="fieldNameTest">valueTest</Field></AdditionalFields></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_property_with_no_field_name_gets_skipped
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <AdditionalFields>
-            <Field DisplayName="displayNameTest" MatchingRule="loose" Name="None">valueTest</Field>
-          </AdditionalFields>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><AdditionalFields><Field DisplayName="displayNameTest" MatchingRule="loose" Name="None">valueTest</Field></AdditionalFields></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_property_with_no_field_name_gets_skipped.1
   list([
@@ -77,89 +22,19 @@
   ])
 # ---
 # name: test_entity_property_with_no_matching_rule_gets_loose_matching_rule
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <AdditionalFields>
-            <Field DisplayName="displayNameTest" MatchingRule="loose" Name="fieldNameTest">valueTest</Field>
-          </AdditionalFields>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><AdditionalFields><Field DisplayName="displayNameTest" MatchingRule="loose" Name="fieldNameTest">valueTest</Field></AdditionalFields></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_property_with_no_value_gets_empty_value
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <AdditionalFields>
-            <Field DisplayName="displayNameTest" MatchingRule="loose" Name="fieldNameTest"></Field>
-          </AdditionalFields>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><AdditionalFields><Field DisplayName="displayNameTest" MatchingRule="loose" Name="fieldNameTest"></Field></AdditionalFields></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_display_information
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <DisplayInformation>
-            <Label Name="Display Info Title" Type="text/html">&lt;p&gt;Display Info Content&lt;/p&gt;</Label>
-          </DisplayInformation>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><DisplayInformation><Label Name="Display Info Title" Type="text/html">&lt;p&gt;Display Info Content&lt;/p&gt;</Label></DisplayInformation></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_icon
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <IconURL>https://www.maltego.com/img/maltego-logo/maltego-horizontal.png</IconURL>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><IconURL>https://www.maltego.com/img/maltego-logo/maltego-horizontal.png</IconURL></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_none_type_is_phrase
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Value</Value>
-          <Weight>100</Weight>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Value</Value><Weight>100</Weight></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_none_type_is_phrase.1
   list([
@@ -167,19 +42,7 @@
   ])
 # ---
 # name: test_entity_with_none_value
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value></Value>
-          <Weight>100</Weight>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value></Value><Weight>100</Weight></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_none_value.1
   list([
@@ -187,89 +50,20 @@
   ])
 # ---
 # name: test_entity_with_overlays
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <Overlays>
-            <Overlay position="NW" propertyName="#45e06f" type="colour"></Overlay>
-          </Overlays>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><Overlays><Overlay position="NW" propertyName="#45e06f" type="colour"></Overlay></Overlays></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_properties
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-          <AdditionalFields>
-            <Field DisplayName="fieldNameTest" MatchingRule="loose" Name="fieldNameTest">valueTest</Field>
-            <Field DisplayName="displayNameTest2" MatchingRule="strict" Name="fieldNameTest2">valueTest2</Field>
-          </AdditionalFields>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight><AdditionalFields><Field DisplayName="fieldNameTest" MatchingRule="loose" Name="fieldNameTest">valueTest</Field><Field DisplayName="displayNameTest2" MatchingRule="strict" Name="fieldNameTest2">valueTest2</Field></AdditionalFields></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_entity_with_value
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities>
-        <Entity Type="maltego.Phrase">
-          <Value>Hello Spencer!</Value>
-          <Weight>100</Weight>
-        </Entity>
-      </Entities>
-      <UIMessages></UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value>Hello Spencer!</Value><Weight>100</Weight></Entity></Entities><UIMessages></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_exception_message
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities></Entities>
-      <UIMessages>
-        <UIMessage MessageType="PartialError">Test Exception</UIMessage>
-      </UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities></Entities><UIMessages><UIMessage MessageType="PartialError">Test Exception</UIMessage></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
 # name: test_response_with_exception
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformExceptionMessage>
-      <Exceptions>
-        <Exception>Test Exception</Exception>
-      </Exceptions>
-    </MaltegoTransformExceptionMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformExceptionMessage><Exceptions><Exception>Test Exception</Exception></Exceptions></MaltegoTransformExceptionMessage></MaltegoMessage>'
 # ---
 # name: test_response_with_ui_message
-  '''
-  <MaltegoMessage>
-    <MaltegoTransformResponseMessage>
-      <Entities></Entities>
-      <UIMessages>
-        <UIMessage MessageType="inform">Test Message</UIMessage>
-      </UIMessages>
-    </MaltegoTransformResponseMessage>
-  </MaltegoMessage>
-  '''
+  '<MaltegoMessage><MaltegoTransformResponseMessage><Entities></Entities><UIMessages><UIMessage MessageType="inform">Test Message</UIMessage></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---
