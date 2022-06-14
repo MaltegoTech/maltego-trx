@@ -178,10 +178,9 @@ class MaltegoEntity(object):
                 field_name, display_name, matching_rule, value = prop
 
                 if not field_name:
-                    logger.error(f"No property name specified. Skipping property: "
+                    logger.error(f"No property name specified. "
                                  f"field_name={field_name}, display_name={display_name}, "
                                  f"matching_rule={matching_rule}, value={value}")
-                    continue
 
                 # the client will still use the entity definitions display value
                 # if there is none, it would use the empty string, so we use the title as a backup
@@ -203,7 +202,6 @@ class MaltegoEntity(object):
                 if not all((property_name, position, overlay_type)):
                     logging.warning(f"Overlay is missing a property name, position or type: "
                                     f"property_name={property_name}, position={position}, overlay_type={overlay_type}")
-                    continue
 
                 SubElement(overlays_xml, 'Overlay',
                            attrib={'propertyName': str(property_name),
@@ -263,9 +261,9 @@ class MaltegoTransform(object):
         for ui_message in self.UIMessages:
             message_type, message_content = ui_message
             if not all((message_type, message_content)):
-                logging.warning(f"UIMessage is missing a message type or content and will be skipped: "
+                message_type = message_type or UIM_INFORM
+                logging.warning(f"UIMessage is missing a message type or content: "
                                 f"message_type={message_type}, message_content={message_content}")
-                continue
 
             ui_message_xml = SubElement(ui_messages_xml, 'UIMessage', attrib={'MessageType': message_type})
             ui_message_xml.text = str(message_content)
