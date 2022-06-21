@@ -163,10 +163,15 @@ class MaltegoEntity(object):
             for display_info in self.displayInformation:
                 title, content = display_info
 
-                if not all((title, content)):
-                    logging.warning(f"Display information is missing a title or content: "
-                                    f"title={title}, content={content}")
-                    continue
+                if not title:
+                    logger.warning(f"Display information is missing title and will default to 'Info': "
+                                   f"title={title}")
+                    title = 'Info'
+
+                if not content:
+                    logging.warning(f"Display information is missing content: "
+                                    f"content={content}")
+                    content = ""
 
                 display_info_xml = SubElement(display_infos_xml, 'Label', attrib={'Name': title, 'Type': "text/html"})
                 # for some reason, the client accepts escaped html and renders it correctly, so we don't need CDATA
