@@ -1,6 +1,10 @@
+import os.path
+
 from maltego_trx.registry import register_transform_classes
 from maltego_trx.server import app
 from tests import transforms
+
+__TESTDIR__ = os.path.dirname(__file__)
 
 
 def test_request_property_mapping():
@@ -15,6 +19,6 @@ def test_request_property_mapping():
 
 
 def make_transform_call(test_app=None, run_endpoint=""):
-    with open('test_request.xml') as requestMsg:
+    with open(os.path.join(__TESTDIR__, 'test_request.xml')) as requestMsg:
         response = test_app.post(run_endpoint, data=requestMsg.read())
     return response

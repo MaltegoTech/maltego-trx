@@ -1,10 +1,11 @@
+import logging
 import uuid
 from xml.dom import minidom
 from xml.etree.ElementTree import Element, SubElement
 
-from .entities import Phrase, translate_legacy_property_name, entity_property_map
+from .entities import translate_legacy_property_name, entity_property_map
 from .overlays import OverlayPosition, OverlayType
-from .utils import remove_invalid_xml_chars, serialize_xml
+from .utils import remove_invalid_xml_chars, serialize_xml, deprecated, logger
 
 BOOKMARK_COLOR_NONE = "-1"
 BOOKMARK_COLOR_BLUE = "0"
@@ -51,8 +52,16 @@ OVERLAY_TEMPLATE = "<Overlay position=\"%(position)s\" propertyName=\"%(property
 
 class MaltegoEntity(object):
     def __init__(self, type=None, value=None):
-        self.entityType = type if type else Phrase
-        self.value = value if value else ""
+        if not type:
+            logger.warning("Entity has no Type and will default to maltego.Phrase")
+            type = 'maltego.Phrase'
+
+        if not value:
+            logger.warning("Entity has no Value and will default to ''")
+            value = ''
+
+        self.entityType = type
+        self.value = value
 
         self.weight = 100
         self.additionalFields = []
@@ -73,7 +82,7 @@ class MaltegoEntity(object):
             self.weight = weight
 
     def addDisplayInformation(self, content=None, title='Info'):
-        if content:
+        if content and title:
             self.displayInformation.append([title, content])
 
     def addProperty(self, fieldName=None, displayName=None, matchingRule='loose', value=None):
@@ -99,7 +108,8 @@ class MaltegoEntity(object):
         self.addProperty('link#maltego.link.direction', 'link#maltego.link.direction', 'loose', 'output-to-input')
 
     def addCustomLinkProperty(self, fieldName=None, displayName=None, value=None):
-        self.addProperty('link#' + fieldName, displayName, '', value)
+        if fieldName:
+            self.addProperty('link#' + fieldName, displayName, '', value)
 
     def setBookmark(self, bookmark):
         self.addProperty('bookmark#', 'Bookmark', '', bookmark)
@@ -112,6 +122,7 @@ class MaltegoEntity(object):
     ):
         self.overlays.append([propertyName, position.value, overlayType.value])
 
+    @deprecated()
     def add_field_to_xml(self, additional_field):
         name, display, matching, value = additional_field
         matching = "strict" if matching.lower().strip() == "strict" else "loose"
@@ -123,6 +134,7 @@ class MaltegoEntity(object):
             "value": remove_invalid_xml_chars(value),
         }
 
+    @deprecated()
     def disp_info_to_xml(self, disp_info):
         name, content = disp_info
 
@@ -132,10 +144,16 @@ class MaltegoEntity(object):
         }
 
     def build_xml(self) -> Element:
+        # defaults are set to allow for backwards compatibility with old serializer
+
         entity_xml = Element('Entity', attrib={'Type': self.entityType})
 
         value_xml = SubElement(entity_xml, 'Value')
         value_xml.text = str(self.value)
+
+        if not self.weight:
+            logger.warning("Entity has no Weight and will default to 100")
+            self.weight = 100
 
         weight_xml = SubElement(entity_xml, 'Weight')
         weight_xml.text = str(self.weight)
@@ -145,6 +163,16 @@ class MaltegoEntity(object):
             for display_info in self.displayInformation:
                 title, content = display_info
 
+                if not title:
+                    logger.warning(f"Display information is missing title and will default to 'Info': "
+                                   f"title={title}")
+                    title = 'Info'
+
+                if not content:
+                    logging.warning(f"Display information is missing content: "
+                                    f"content={content}")
+                    content = ""
+
                 display_info_xml = SubElement(display_infos_xml, 'Label', attrib={'Name': title, 'Type': "text/html"})
                 # for some reason, the client accepts escaped html and renders it correctly, so we don't need CDATA
                 display_info_xml.text = str(content)
@@ -152,22 +180,36 @@ class MaltegoEntity(object):
         if self.additionalFields:
             properties_xml = SubElement(entity_xml, 'AdditionalFields')
             for prop in self.additionalFields:
-                title, display, matching, val = prop
-                matching = "strict" if matching.lower().strip() == "strict" else "loose"
+                field_name, display_name, matching_rule, value = prop
+
+                if not field_name:
+                    logger.error(f"No property name specified. "
+                                 f"field_name={field_name}, display_name={display_name}, "
+                                 f"matching_rule={matching_rule}, value={value}")
+
+                # the client will still use the entity definitions display value
+                # if there is none, it would use the empty string, so we use the title as a backup
+                display_name = display_name or field_name
+
+                matching_rule = "strict" if matching_rule == "strict" else "loose"
 
                 field_xml = SubElement(properties_xml, 'Field',
-                                       attrib={'Name': str(title),
-                                               'DisplayName': str(display),
-                                               'MatchingRule': matching})
-                field_xml.text = str(val)
+                                       attrib={'Name': str(field_name),
+                                               'DisplayName': str(display_name),
+                                               'MatchingRule': matching_rule})
+                field_xml.text = str(value or "")
 
         if self.overlays:
             overlays_xml = SubElement(entity_xml, 'Overlays')
             for overlay in self.overlays:
                 property_name, position, overlay_type = overlay
 
+                if not all((property_name, position, overlay_type)):
+                    logging.warning(f"Overlay is missing a property name, position or type: "
+                                    f"property_name={property_name}, position={position}, overlay_type={overlay_type}")
+
                 SubElement(overlays_xml, 'Overlay',
-                           attrib={'propertyName': property_name,
+                           attrib={'propertyName': str(property_name),
                                    'position': position,
                                    'type': overlay_type})
 
@@ -223,9 +265,13 @@ class MaltegoTransform(object):
         ui_messages_xml = SubElement(response_xml, 'UIMessages')
         for ui_message in self.UIMessages:
             message_type, message_content = ui_message
+            if not all((message_type, message_content)):
+                message_type = message_type or UIM_INFORM
+                logging.warning(f"UIMessage is missing a message type or content: "
+                                f"message_type={message_type}, message_content={message_content}")
 
             ui_message_xml = SubElement(ui_messages_xml, 'UIMessage', attrib={'MessageType': message_type})
-            ui_message_xml.text = message_content
+            ui_message_xml.text = str(message_content)
 
         return message_xml
 

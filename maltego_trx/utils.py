@@ -1,11 +1,15 @@
+import logging
 import math
 import re
 import sys
+import warnings
 from typing import TypeVar, Callable, Hashable, Iterable, Generator, Sequence
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 
 from six import text_type, binary_type
+
+logger = logging.getLogger("maltego-trx")
 
 
 def name_to_path(name):
@@ -118,11 +122,32 @@ def serialize_bool(boolean: bool, serialized_true: str, serialized_false: str) -
     return serialized_true if boolean else serialized_false
 
 
-def serialize_xml(xml: Element) -> str:
-    # options are needed to have same xml output for py < 3.8 and py >= 3.8
-    output = ElementTree.tostring(xml, encoding='unicode', short_empty_elements=False)
+def serialize_xml(xml: Element,
+                  indent: bool = True,
+                  canonicalize: bool = True,
+                  short_empty_elements: bool = True) -> str:
+    if indent and sys.version_info.minor >= 9:
+        ElementTree.indent(xml)
 
-    if sys.version_info[1] >= 8:
+    # options are needed to have same xml output for py < 3.8 and py >= 3.8
+    output = ElementTree.tostring(xml, encoding='unicode', short_empty_elements=short_empty_elements)
+
+    if canonicalize and sys.version_info.minor >= 8:
         output = ElementTree.canonicalize(output)
 
     return output
+
+
+# https://stackoverflow.com/a/48632082
+def deprecated(message="This function is deprecated."):
+    def deprecated_decorator(func):
+        def deprecated_func(*args, **kwargs):
+            warnings.warn("{} is a deprecated function. {}".format(func.__name__, message),
+                          category=DeprecationWarning,
+                          stacklevel=2)
+            warnings.simplefilter('default', DeprecationWarning)
+            return func(*args, **kwargs)
+
+        return deprecated_func
+
+    return deprecated_decorator
