@@ -1,13 +1,13 @@
 import logging
 import os
+import zipfile
 from dataclasses import dataclass, field
 from itertools import chain
 from typing import List, Optional, Dict, Iterable
-from xml.etree import ElementTree
 
-from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
-    name_to_path
 from maltego_trx.protocol.mtz import create_local_server_xml, create_settings_xml, create_transform_xml
+from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
+    name_to_path, serialize_xml
 
 TRANSFORMS_CSV_HEADER = "Owner,Author,Disclaimer,Description,Version," \
                         "Name,UIName,URL,entityName," \
@@ -138,11 +138,13 @@ class TransformRegistry:
         export_as_csv(SETTINGS_CSV_HEADER, csv_lines, config_path, csv_line_limit)
 
     def write_local_mtz(self,
-                        mtz_path: str,
-                        working_dir: str,
+                        mtz_path: str = "./local.mtz",
+                        working_dir: str = ".",
                         command: str = "python3",
                         params: str = "project.py",
                         debug: bool = True):
+
+        working_dir = os.path.abspath(working_dir)
         if self.global_settings:
             logging.warning(f"Settings are not supported with local transforms. "
                             f"Global settings are: {', '.join(map(lambda s: s.name, self.global_settings))}")
@@ -152,14 +154,10 @@ class TransformRegistry:
         settings_xml = create_settings_xml(working_dir, command, params, debug)
 
         with zipfile.ZipFile(mtz_path, "w") as mtz:
-            if sys.version_info.minor >= 9:
-                ElementTree.indent(server_xml)
-                ElementTree.indent(settings_xml)
-
-            server_xml_str = ElementTree.tostring(server_xml)
+            server_xml_str = serialize_xml(server_xml)
             mtz.writestr("Servers/Local.tas", server_xml_str)
 
-            settings_xml_str = ElementTree.tostring(settings_xml)
+            settings_xml_str = serialize_xml(settings_xml)
 
             for name, meta in self.transform_metas.items():
                 if tx_settings := self.transform_settings.get(name):
@@ -170,10 +168,7 @@ class TransformRegistry:
                                            meta.description, meta.input_entity,
                                            self.author)
 
-                if sys.version_info.minor >= 9:
-                    ElementTree.indent(xml)
-
-                xml_str = ElementTree.tostring(xml)
+                xml_str = serialize_xml(xml)
 
                 mtz.writestr(f"TransformRepositories/Local/{name}.transform", xml_str)
                 mtz.writestr(f"TransformRepositories/Local/{name}.transformsettings", settings_xml_str)
