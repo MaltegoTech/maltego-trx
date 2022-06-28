@@ -1,5 +1,5 @@
 import datetime
-from typing import Iterable
+from typing import Iterable, List
 from xml.etree.ElementTree import Element, SubElement
 
 
@@ -154,3 +154,21 @@ def create_transform_xml(name: str, display_name: str, description: str, input_e
     stealth_level.text = "0"
 
     return transform_xml
+
+
+def create_transform_set_xml(name: str, description: str, transforms: List[str]) -> Element:
+    set_xml = Element("TransformSet",
+                      attrib={
+                          "name": name,
+                          "description": description
+                      })
+
+    transforms_xml = SubElement(set_xml, "Transforms")
+    for transform in transforms:
+        SubElement(transforms_xml,
+                   "Transform",
+                   attrib={
+                       "name": transform
+                   })
+
+    return set_xml

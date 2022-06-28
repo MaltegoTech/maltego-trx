@@ -1,11 +1,13 @@
 import logging
 import os
 import zipfile
+from collections import defaultdict
 from dataclasses import dataclass, field
 from itertools import chain
 from typing import List, Optional, Dict, Iterable
 
-from maltego_trx.protocol.mtz import create_local_server_xml, create_settings_xml, create_transform_xml
+from maltego_trx.protocol.mtz import create_local_server_xml, create_settings_xml, create_transform_xml, \
+    create_transform_set_xml
 from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
     name_to_path, serialize_xml
 
@@ -13,6 +15,12 @@ TRANSFORMS_CSV_HEADER = "Owner,Author,Disclaimer,Description,Version," \
                         "Name,UIName,URL,entityName," \
                         "oAuthSettingId,transformSettingIDs,seedIDs"
 SETTINGS_CSV_HEADER = "Name,Type,Display,DefaultValue,Optional,Popup"
+
+
+@dataclass(frozen=True)
+class TransformSet:
+    name: str
+    description: str
 
 
 @dataclass()
@@ -23,9 +31,10 @@ class TransformMeta:
     description: str
     output_entities: List[str]
     disclaimer: str
+    transform_set: TransformSet
 
 
-@dataclass()
+@dataclass(frozen=True)
 class TransformSetting:
     name: str
     display_name: str
@@ -60,10 +69,11 @@ class TransformRegistry:
 
     transform_metas: Dict[str, TransformMeta] = field(init=False, default_factory=dict)
     transform_settings: Dict[str, List[TransformSetting]] = field(init=False, default_factory=dict)
+    transform_sets: Dict[TransformSet, List[str]] = field(init=False, default_factory=lambda: defaultdict(list))
 
     def register_transform(self, display_name: str, input_entity: str, description: str,
                            settings: List[TransformSetting] = None, output_entities: List[str] = None,
-                           disclaimer: str = ""):
+                           disclaimer: str = "", transform_set: TransformSet = None):
         """ This method can be used as a decorator on transform classes. The data will be used to fill out csv config
             files to be imported into a TDS.
         """
@@ -76,11 +86,15 @@ class TransformRegistry:
                                  display, input_entity,
                                  description,
                                  output_entities or [],
-                                 disclaimer)
+                                 disclaimer,
+                                 transform_set=transform_set)
             self.transform_metas[cleaned_transform_name] = meta
 
             if settings:
                 self.transform_settings[cleaned_transform_name] = settings
+
+            if transform_set:
+                self.transform_sets[transform_set].append(cleaned_transform_name)
 
             return transform_callable
 
@@ -151,15 +165,15 @@ class TransformRegistry:
 
         """Creates an .mtz for bulk importing local transforms"""
         server_xml = create_local_server_xml(self.transform_metas.keys())
-        settings_xml = create_settings_xml(working_dir, command, params, debug)
 
         with zipfile.ZipFile(mtz_path, "w") as mtz:
             server_xml_str = serialize_xml(server_xml)
             mtz.writestr("Servers/Local.tas", server_xml_str)
 
-            settings_xml_str = serialize_xml(settings_xml)
-
             for name, meta in self.transform_metas.items():
+                settings_xml = create_settings_xml(working_dir, command, f"{params} local {name}", debug)
+                settings_xml_str = serialize_xml(settings_xml)
+
                 if tx_settings := self.transform_settings.get(name):
                     logging.warning("Settings are not supported with local transforms. "
                                     f"Transform '{meta.display_name}' has: {', '.join(map(lambda s: s.name, tx_settings))}")
@@ -172,3 +186,10 @@ class TransformRegistry:
 
                 mtz.writestr(f"TransformRepositories/Local/{name}.transform", xml_str)
                 mtz.writestr(f"TransformRepositories/Local/{name}.transformsettings", settings_xml_str)
+
+            for transform_set, transforms in self.transform_sets.items():
+                set_xml = create_transform_set_xml(transform_set.name, transform_set.description, transforms)
+
+                set_xml_str = serialize_xml(set_xml)
+
+                mtz.writestr(f"TransformSets/{transform_set.name}.set", set_xml_str)
