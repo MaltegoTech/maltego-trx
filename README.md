@@ -466,7 +466,7 @@ The request/maltego msg object given to the transform contains the information a
 - `addProperty(fieldName: str, displayName: str, matchingRule: str, value: str)`: Add a property to the entity. Matching
   rule can be `strict` or `loose`.
 - `addOverlay(propertyName: str, position: OverlayPosition, overlay_type: OverlayType)`: Add an overlay to the entity.
-  `OverlayPosition` and `OverlayType` are defined in the `maltego_tx.overlays`
+  `OverlayPosition` and `OverlayType` are defined in the `maltego_trx.overlays`
 
 Overlay can be added as Text, Image or Color
 
@@ -516,4 +516,4 @@ Overlay can be added as Text, Image or Color
 - `setLinkThickness(thick: int)`: Set link thickness (default is 1)
 - `setLinkLabel(label: str)`: Set the label of the link
 - `reverseLink()`: Reverse the link direction
-- `addCustomLinkProperty(fieldname=None, displayName=None, value=None)`: Set a custom property for the link
+- `addCustomLinkProperty(fieldName=None, displayName=None, value=None)`: Set a custom property for the link
