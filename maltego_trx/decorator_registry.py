@@ -179,7 +179,8 @@ class TransformRegistry:
             settings_xml = create_settings_xml(working_dir, command, f"{params} local {name}", debug)
             settings_xml_str = serialize_xml(settings_xml)
 
-            if tx_settings := self.transform_settings.get(name):
+            tx_settings = self.transform_settings.get(name)
+            if tx_settings:
                 logging.warning("Settings are not supported with local transforms. "
                                 f"Transform '{meta.display_name}' has: {', '.join(map(lambda s: s.name, tx_settings))}")
 
