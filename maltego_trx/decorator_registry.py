@@ -4,7 +4,7 @@ import zipfile
 from collections import defaultdict
 from dataclasses import dataclass, field
 from itertools import chain
-from typing import List, Optional, Dict, Iterable
+from typing import List, Optional, Dict, Iterable, Tuple
 
 from maltego_trx.protocol.mtz import create_local_server_xml, create_settings_xml, create_transform_xml, \
     create_transform_set_xml
@@ -100,11 +100,9 @@ class TransformRegistry:
 
         return decorated
 
-    def write_transforms_config(self, config_path: str = "./transforms.csv", csv_line_limit: int = 100):
-        """Exports the collected transform metadata as a csv-file to config_path"""
+    def _create_transforms_config(self) -> Iterable[str]:
         global_settings_full_names = [gs.id for gs in self.global_settings]
 
-        csv_lines = []
         for transform_name, transform_meta in self.transform_metas.items():
             meta_settings = [setting.id for setting in
                              self.transform_settings.get(transform_name, [])]
@@ -126,16 +124,19 @@ class TransformRegistry:
             ]
 
             escaped_fields = escape_csv_fields(*transform_row)
-            csv_lines.append(",".join(escaped_fields))
+            yield ",".join(escaped_fields)
 
-        export_as_csv(TRANSFORMS_CSV_HEADER, csv_lines, config_path, csv_line_limit)
+    def write_transforms_config(self, config_path: str = "./transforms.csv", csv_line_limit: int = 100):
+        """Exports the collected transform metadata as a csv-file to config_path"""
 
-    def write_settings_config(self, config_path: str = "./settings.csv", csv_line_limit: int = 100):
-        """Exports the collected settings metadata as a csv-file to config_path"""
+        csv_lines = self._create_transforms_config()
+
+        export_as_csv(TRANSFORMS_CSV_HEADER, tuple(csv_lines), config_path, csv_line_limit)
+
+    def _create_settings_config(self) -> Iterable[str]:
         chained_settings = chain(self.global_settings, *list(self.transform_settings.values()))
         unique_settings: Iterable[TransformSetting] = filter_unique(lambda s: s.name, chained_settings)
 
-        csv_lines = []
         for setting in unique_settings:
             setting_row = [
                 setting.id,
@@ -147,17 +148,22 @@ class TransformRegistry:
             ]
 
             escaped_fields = escape_csv_fields(*setting_row)
-            csv_lines.append(",".join(escaped_fields))
+            yield ",".join(escaped_fields)
 
-        export_as_csv(SETTINGS_CSV_HEADER, csv_lines, config_path, csv_line_limit)
+    def write_settings_config(self, config_path: str = "./settings.csv", csv_line_limit: int = 100):
+        """Exports the collected settings metadata as a csv-file to config_path"""
 
-    def write_local_mtz(self,
-                        mtz_path: str = "./local.mtz",
-                        working_dir: str = ".",
-                        command: str = "python3",
-                        params: str = "project.py",
-                        debug: bool = True):
+        csv_lines = self._create_settings_config()
 
+        export_as_csv(SETTINGS_CSV_HEADER, tuple(csv_lines), config_path, csv_line_limit)
+
+    def _create_local_mtz(
+            self,
+            working_dir: str = ".",
+            command: str = "python3",
+            params: str = "project.py",
+            debug: bool = True
+    ) -> Iterable[Tuple[str, str]]:
         working_dir = os.path.abspath(working_dir)
         if self.global_settings:
             logging.warning(f"Settings are not supported with local transforms. "
@@ -166,30 +172,40 @@ class TransformRegistry:
         """Creates an .mtz for bulk importing local transforms"""
         server_xml = create_local_server_xml(self.transform_metas.keys())
 
+        server_xml_str = serialize_xml(server_xml)
+        yield "Servers/Local.tas", server_xml_str
+
+        for name, meta in self.transform_metas.items():
+            settings_xml = create_settings_xml(working_dir, command, f"{params} local {name}", debug)
+            settings_xml_str = serialize_xml(settings_xml)
+
+            if tx_settings := self.transform_settings.get(name):
+                logging.warning("Settings are not supported with local transforms. "
+                                f"Transform '{meta.display_name}' has: {', '.join(map(lambda s: s.name, tx_settings))}")
+
+            xml = create_transform_xml(name, meta.display_name,
+                                       meta.description, meta.input_entity,
+                                       self.author)
+
+            xml_str = serialize_xml(xml)
+
+            yield f"TransformRepositories/Local/{name}.transform", xml_str
+            yield f"TransformRepositories/Local/{name}.transformsettings", settings_xml_str
+
+        for transform_set, transforms in self.transform_sets.items():
+            set_xml = create_transform_set_xml(transform_set.name, transform_set.description, transforms)
+
+            set_xml_str = serialize_xml(set_xml)
+
+            yield f"TransformSets/{transform_set.name}.set", set_xml_str
+
+    def write_local_mtz(self,
+                        mtz_path: str = "./local.mtz",
+                        working_dir: str = ".",
+                        command: str = "python3",
+                        params: str = "project.py",
+                        debug: bool = True):
+
         with zipfile.ZipFile(mtz_path, "w") as mtz:
-            server_xml_str = serialize_xml(server_xml)
-            mtz.writestr("Servers/Local.tas", server_xml_str)
-
-            for name, meta in self.transform_metas.items():
-                settings_xml = create_settings_xml(working_dir, command, f"{params} local {name}", debug)
-                settings_xml_str = serialize_xml(settings_xml)
-
-                if tx_settings := self.transform_settings.get(name):
-                    logging.warning("Settings are not supported with local transforms. "
-                                    f"Transform '{meta.display_name}' has: {', '.join(map(lambda s: s.name, tx_settings))}")
-
-                xml = create_transform_xml(name, meta.display_name,
-                                           meta.description, meta.input_entity,
-                                           self.author)
-
-                xml_str = serialize_xml(xml)
-
-                mtz.writestr(f"TransformRepositories/Local/{name}.transform", xml_str)
-                mtz.writestr(f"TransformRepositories/Local/{name}.transformsettings", settings_xml_str)
-
-            for transform_set, transforms in self.transform_sets.items():
-                set_xml = create_transform_set_xml(transform_set.name, transform_set.description, transforms)
-
-                set_xml_str = serialize_xml(set_xml)
-
-                mtz.writestr(f"TransformSets/{transform_set.name}.set", set_xml_str)
+            for path, content in self._create_local_mtz(working_dir, command, params, debug):
+                mtz.writestr(path, content)
