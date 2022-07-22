@@ -26,7 +26,7 @@ def registry():
     return registry
 
 
-def make_transform_setting():
+def make_transform_setting(global_setting: bool = None):
     name = petname.generate()
     setting_type = random.choice(['string', 'boolean', 'date', 'datetime', 'daterange', 'url', 'double', 'int'])
 
@@ -36,7 +36,7 @@ def make_transform_setting():
                             default_value=petname.generate(),
                             optional=random.choice([True, False]),
                             popup=random.choice([True, False]),
-                            global_setting=random.choice([True, False]))
+                            global_setting=global_setting or random.choice([True, False]))
 
 
 def make_transform(registry: TransformRegistry, settings: List[TransformSetting] = None):
@@ -136,11 +136,9 @@ def test_transform_to_csv(registry):
 
 
 def test_setting_to_csv(registry):
-    local_setting = make_transform_setting()
-    local_setting.global_setting = False
+    local_setting = make_transform_setting(global_setting=False)
 
-    global_setting = make_transform_setting()
-    global_setting.global_setting = True
+    global_setting = make_transform_setting(global_setting=True)
 
     registry.global_settings.append(global_setting)
 
