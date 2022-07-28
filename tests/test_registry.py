@@ -161,3 +161,4 @@ def test_setting_to_csv(registry):
             assert data.default == setting.default_value
             assert data.optional == serialize_bool(setting.optional, 'True', 'False')
             assert data.popup == serialize_bool(setting.popup, 'Yes', 'No')
+

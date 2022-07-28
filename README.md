@@ -5,6 +5,9 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+
+__1.6.0__: Automatically generate am `.mtz` for your local transforms
+
 __1.5.2__: Add logging output for invalid / missing params in xml serialization
 
 __1.5.1__: Add ignored files to starter and use README for pypi
@@ -303,6 +306,36 @@ registry.write_transforms_config()
 registry.write_settings_config()
 
 handle_run(__name__, sys.argv, application)
+```
+
+### Generating an `.mtz` config with your local Transforms
+
+Since `maltego-trx>=1.6.0` you can generate an `.mtz` config file with your local transforms.
+
+If you're already using the `TransformRegistry`, just invoke the `write_local_config()` method.
+
+```python
+# project.py
+
+registry.write_local_mtz()
+```
+
+This will create a file called `local.mtz` in the current directory. You can then import this file into Maltego and
+start using your local transforms faster. Just remember that settings are not passed to local transforms.
+
+The method takes in the same arguments as the interface in the Maltego client.
+If you are using a `virtualenv` environment, you might want to change the `command` argument to use that.
+
+```bash
+# project.py
+
+registry.write_local_mtz(
+    mtz_path: str = "./local.mtz", # path to the local .mtz file
+    working_dir: str = ".",
+    command: str = "python3", # for a venv you might want to use `./venv/bin/python3`
+    params: str = "project.py",
+    debug: bool = True
+)
 ```
 
 ## Legacy Transforms
