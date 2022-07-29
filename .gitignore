@@ -6,5 +6,6 @@ __pycache__
 maltego_trx.egg-info
 .pytest_cache
 venv
+.venv
 env
 *.code-workspace
