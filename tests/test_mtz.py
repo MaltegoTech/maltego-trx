@@ -12,7 +12,10 @@ from tests.test_xml import _serialize_xml
 
 
 def test_create_local_server_xml(mocker, snapshot):
-    mocker.patch("maltego_trx.mtz.create_last_sync_timestamp", return_value="2022-08-10 07:52:45 UTC")
+    mocker.patch(
+        "maltego_trx.mtz.create_last_sync_timestamp",
+        return_value="2022-08-10 07:52:45 UTC",
+    )
 
     transforms = ["to_lower", "to_upper", "to_title"]
 

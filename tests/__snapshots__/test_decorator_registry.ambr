@@ -2,62 +2,19 @@
   list([
     tuple(
       'Servers/Local.tas',
-      '''
-        <MaltegoServer description="Local transforms hosted on this machine" enabled="true" name="Local" url="http://localhost">
-          <LastSync>2022-08-10 07:52:45 UTC</LastSync>
-          <Protocol version="0.0"></Protocol>
-          <Authentication type="none"></Authentication>
-          <Transforms>
-            <Transform name="testclass"></Transform>
-          </Transforms>
-          <Seeds></Seeds>
-        </MaltegoServer>
-      ''',
+      '<MaltegoServer description="Local transforms hosted on this machine" enabled="true" name="Local" url="http://localhost"><LastSync>2022-08-10 07:52:45 UTC</LastSync><Protocol version="0.0"></Protocol><Authentication type="none"></Authentication><Transforms><Transform name="testclass"></Transform></Transforms><Seeds></Seeds></MaltegoServer>',
     ),
     tuple(
       'TransformRepositories/Local/testclass.transform',
-      '''
-        <MaltegoTransform abstract="false" author="Maltego Support" description="" displayName="Test Class" name="testclass" requireDisplayInfo="false" template="false" visibility="public">
-          <TransformAdapter>com.paterva.maltego.transform.protocol.v2api.LocalTransformAdapterV2</TransformAdapter>
-          <Properties>
-            <Fields>
-              <Property abstract="false" auth="false" description="The command to execute for this transform" displayName="Command line" hidden="false" name="transform.local.command" nullable="false" popup="false" readonly="false" type="string" visibility="public"></Property>
-              <Property abstract="false" auth="false" description="The parameters to pass to the transform command" displayName="Command parameters" hidden="false" name="transform.local.parameters" nullable="true" popup="false" readonly="false" type="string" visibility="public"></Property>
-              <Property abstract="false" auth="false" description="The working directory used when invoking the executable" displayName="Working directory" hidden="false" name="transform.local.working-directory" nullable="true" popup="false" readonly="false" type="string" visibility="public"></Property>
-              <Property abstract="false" auth="false" description="When this is set, the transform's text output will be printed to the output window" displayName="Show debug info" hidden="false" name="transform.local.debug" nullable="true" popup="false" readonly="false" type="boolean" visibility="public"></Property>
-            </Fields>
-          </Properties>
-          <InputConstraints>
-            <Entity max="1" min="1" type=""></Entity>
-          </InputConstraints>
-          <OutputEntities></OutputEntities>
-          <defaultSets></defaultSets>
-          <StealthLevel>0</StealthLevel>
-        </MaltegoTransform>
-      ''',
+      '<MaltegoTransform abstract="false" author="Maltego Support" description="" displayName="Test Class" name="testclass" requireDisplayInfo="false" template="false" visibility="public"><TransformAdapter>com.paterva.maltego.transform.protocol.v2api.LocalTransformAdapterV2</TransformAdapter><Properties><Fields><Property abstract="false" auth="false" description="The command to execute for this transform" displayName="Command line" hidden="false" name="transform.local.command" nullable="false" popup="false" readonly="false" type="string" visibility="public"></Property><Property abstract="false" auth="false" description="The parameters to pass to the transform command" displayName="Command parameters" hidden="false" name="transform.local.parameters" nullable="true" popup="false" readonly="false" type="string" visibility="public"></Property><Property abstract="false" auth="false" description="The working directory used when invoking the executable" displayName="Working directory" hidden="false" name="transform.local.working-directory" nullable="true" popup="false" readonly="false" type="string" visibility="public"></Property><Property abstract="false" auth="false" description="When this is set, the transform\'s text output will be printed to the output window" displayName="Show debug info" hidden="false" name="transform.local.debug" nullable="true" popup="false" readonly="false" type="boolean" visibility="public"></Property></Fields></Properties><InputConstraints><Entity max="1" min="1" type=""></Entity></InputConstraints><OutputEntities></OutputEntities><defaultSets></defaultSets><StealthLevel>0</StealthLevel></MaltegoTransform>',
     ),
     tuple(
       'TransformRepositories/Local/testclass.transformsettings',
-      '''
-        <TransformSettings disclaimerAccepted="false" enabled="true" favorite="false" runWithAll="true" showHelp="true">
-          <Properties>
-            <Property name="transform.local.command" popup="false" type="string">python3</Property>
-            <Property name="transform.local.parameters" popup="false" type="string">project.py local testclass</Property>
-            <Property name="transform.local.working-directory" popup="false" type="string">/home/maltego</Property>
-            <Property name="transform.local.debug" popup="false" type="boolean">true</Property>
-          </Properties>
-        </TransformSettings>
-      ''',
+      '<TransformSettings disclaimerAccepted="false" enabled="true" favorite="false" runWithAll="true" showHelp="true"><Properties><Property name="transform.local.command" popup="false" type="string">python3</Property><Property name="transform.local.parameters" popup="false" type="string">project.py local testclass</Property><Property name="transform.local.working-directory" popup="false" type="string">/home/maltego</Property><Property name="transform.local.debug" popup="false" type="boolean">true</Property></Properties></TransformSettings>',
     ),
     tuple(
       'TransformSets/test.set',
-      '''
-        <TransformSet description="Test Transform Set" name="test">
-          <Transforms>
-            <Transform name="testclass"></Transform>
-          </Transforms>
-        </TransformSet>
-      ''',
+      '<TransformSet description="Test Transform Set" name="test"><Transforms><Transform name="testclass"></Transform></Transforms></TransformSet>',
     ),
   ])
 # ---

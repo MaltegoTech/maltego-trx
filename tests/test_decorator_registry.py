@@ -7,12 +7,14 @@ from typing import NamedTuple, List
 
 import petname
 import pytest as pytest
+from pytest_mock import MockerFixture
 
 from maltego_trx.decorator_registry import (
     TransformSetting,
     TransformRegistry,
     TRANSFORMS_CSV_HEADER,
-    SETTINGS_CSV_HEADER, TransformSet,
+    SETTINGS_CSV_HEADER,
+    TransformSet,
 )
 from maltego_trx.server import app
 from maltego_trx.utils import name_to_path, serialize_bool
@@ -54,7 +56,7 @@ def make_transform_setting(global_setting: bool = None):
 
 
 def make_transform(
-        registry: TransformRegistry, settings: List[TransformSetting] = None
+    registry: TransformRegistry, settings: List[TransformSetting] = None
 ):
     display_name = petname.generate(separator=" ")
     input_entity = petname.generate(separator=".")
@@ -177,7 +179,7 @@ def test_setting_to_csv(registry: TransformRegistry):
         assert header.rstrip("\n") == SETTINGS_CSV_HEADER
 
         for line, setting in zip(
-                settings_csv.readlines(), [global_setting, local_setting]
+            settings_csv.readlines(), [global_setting, local_setting]
         ):
             line = line.rstrip("\n")
             data: SettingCsvLine = SettingCsvLine(*line.split(","))
@@ -191,7 +193,7 @@ def test_setting_to_csv(registry: TransformRegistry):
 
 
 def test_write_local_mtz_emit_global_settings_warning(
-        registry: TransformRegistry, caplog, snapshot
+    registry: TransformRegistry, caplog, snapshot
 ):
     registry.global_settings = [
         TransformSetting(
@@ -206,7 +208,7 @@ def test_write_local_mtz_emit_global_settings_warning(
 
 
 def test_write_local_mtz_emit_settings_warning(
-        registry: TransformRegistry, caplog, snapshot
+    registry: TransformRegistry, caplog, snapshot
 ):
     local_setting = TransformSetting(
         name="test",
@@ -225,9 +227,12 @@ def test_write_local_mtz_emit_settings_warning(
     assert caplog.messages == snapshot
 
 
-def test_write_local_mtz(registry: TransformRegistry, mocker, snapshot):
-    mocker.patch("maltego_trx.mtz.create_last_sync_timestamp", return_value="2022-08-10 07:52:45 UTC")
-    mocker.patch("maltego_trx.utils.serialize_xml", _serialize_xml)
+def test_write_local_mtz(registry: TransformRegistry, mocker: MockerFixture, snapshot):
+    mocker.patch(
+        "maltego_trx.mtz.create_last_sync_timestamp",
+        return_value="2022-08-10 07:52:45 UTC",
+    )
+    mocker.patch("maltego_trx.decorator_registry.serialize_xml", _serialize_xml)
 
     transform_set = TransformSet(name="test", description="Test Transform Set")
 
@@ -244,7 +249,13 @@ def test_write_local_mtz(registry: TransformRegistry, mocker, snapshot):
     assert files == snapshot
 
 
-def test_write_local_mtz_file(registry: TransformRegistry, mocker, snapshot):
+def test_write_local_mtz_file(registry: TransformRegistry, mocker: MockerFixture, snapshot):
+    mocker.patch(
+        "maltego_trx.mtz.create_last_sync_timestamp",
+        return_value="2022-08-10 07:52:45 UTC",
+    )
+    mocker.patch("maltego_trx.decorator_registry.serialize_xml", _serialize_xml)
+
     transform_set = TransformSet(name="test", description="Test Transform Set")
 
     @registry.register_transform("", "", "", transform_set=transform_set)
@@ -259,4 +270,6 @@ def test_write_local_mtz_file(registry: TransformRegistry, mocker, snapshot):
         assert os.path.exists(mtz_path), "Local mtz file not created"
 
         with zipfile.ZipFile(mtz_path) as local_mtz:
-            assert all(file.file_size > 0 for file in local_mtz.infolist()), "Empty files in local mtz"
+            assert all(
+                file.file_size > 0 for file in local_mtz.infolist()
+            ), "Empty files in local mtz"
