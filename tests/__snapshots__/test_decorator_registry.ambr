@@ -79,11 +79,3 @@
     "Settings are not supported with local transforms. Transform 'Test Class' has: test",
   ])
 # ---
-# name: test_write_local_mtz_file
-  list([
-    <ZipInfo filename='Servers/Local.tas' filemode='?rw-------' file_size=364>,
-    <ZipInfo filename='TransformRepositories/Local/testclass.transform' filemode='?rw-------' file_size=1715>,
-    <ZipInfo filename='TransformRepositories/Local/testclass.transformsettings' filemode='?rw-------' file_size=601>,
-    <ZipInfo filename='TransformSets/test.set' filemode='?rw-------' file_size=151>,
-  ])
-# ---

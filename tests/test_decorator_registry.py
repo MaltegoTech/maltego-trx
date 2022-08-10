@@ -259,4 +259,4 @@ def test_write_local_mtz_file(registry: TransformRegistry, mocker, snapshot):
         assert os.path.exists(mtz_path), "Local mtz file not created"
 
         with zipfile.ZipFile(mtz_path) as local_mtz:
-            assert local_mtz.infolist() == snapshot
+            assert all(file.file_size > 0 for file in local_mtz.infolist()), "Empty files in local mtz"
