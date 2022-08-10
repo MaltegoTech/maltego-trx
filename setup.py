@@ -28,7 +28,6 @@ setup(
         'maltego_trx',
         'maltego_trx/template_dir',
         'maltego_trx/template_dir/transforms',
-        'maltego_trx/protocol'
     ],
     package_data={
         'maltego_trx/template_dir': [
