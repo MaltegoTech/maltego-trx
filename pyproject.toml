@@ -9,7 +9,6 @@ license = "MIT"
 python = "^3.7"
 Flask = ">=1"
 six = ">=1"
-furo = "^2022.6.21"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
