@@ -1,14 +1,22 @@
+import logging
 import os
 import random
+import tempfile
+import zipfile
 from typing import NamedTuple, List
 
 import petname
 import pytest as pytest
 
-from maltego_trx.decorator_registry import TransformSetting, TransformRegistry, TRANSFORMS_CSV_HEADER, \
-    SETTINGS_CSV_HEADER
+from maltego_trx.decorator_registry import (
+    TransformSetting,
+    TransformRegistry,
+    TRANSFORMS_CSV_HEADER,
+    SETTINGS_CSV_HEADER, TransformSet,
+)
 from maltego_trx.server import app
 from maltego_trx.utils import name_to_path, serialize_bool
+from tests.test_xml import _serialize_xml
 
 
 @pytest.fixture
@@ -19,27 +27,35 @@ def client():
 
 @pytest.fixture
 def registry():
-    registry: TransformRegistry = TransformRegistry(owner="Maltego Technologies GmbH",
-                                                    author="Maltego Support",
-                                                    host_url="localhost",
-                                                    seed_ids=["demo"])
+    registry: TransformRegistry = TransformRegistry(
+        owner="Maltego Technologies GmbH",
+        author="Maltego Support",
+        host_url="localhost",
+        seed_ids=["demo"],
+    )
     return registry
 
 
 def make_transform_setting(global_setting: bool = None):
     name = petname.generate()
-    setting_type = random.choice(['string', 'boolean', 'date', 'datetime', 'daterange', 'url', 'double', 'int'])
+    setting_type = random.choice(
+        ["string", "boolean", "date", "datetime", "daterange", "url", "double", "int"]
+    )
 
-    return TransformSetting(name=name,
-                            display_name=name.title(),
-                            setting_type=random.choice(setting_type),
-                            default_value=petname.generate(),
-                            optional=random.choice([True, False]),
-                            popup=random.choice([True, False]),
-                            global_setting=global_setting or random.choice([True, False]))
+    return TransformSetting(
+        name=name,
+        display_name=name.title(),
+        setting_type=random.choice(setting_type),
+        default_value=petname.generate(),
+        optional=random.choice([True, False]),
+        popup=random.choice([True, False]),
+        global_setting=global_setting or random.choice([True, False]),
+    )
 
 
-def make_transform(registry: TransformRegistry, settings: List[TransformSetting] = None):
+def make_transform(
+        registry: TransformRegistry, settings: List[TransformSetting] = None
+):
     display_name = petname.generate(separator=" ")
     input_entity = petname.generate(separator=".")
     description = petname.generate(words=10, separator=" ").title() + "."
@@ -47,7 +63,9 @@ def make_transform(registry: TransformRegistry, settings: List[TransformSetting]
     output_entities = petname.generate(3).split("-")
     disclaimer = petname.generate(words=10, separator=" ").title() + "."
 
-    @registry.register_transform(display_name, input_entity, description, settings, output_entities, disclaimer)
+    @registry.register_transform(
+        display_name, input_entity, description, settings, output_entities, disclaimer
+    )
     class TestClass:
         pass
 
@@ -63,7 +81,14 @@ def test_register_transform_decorator(registry):
     output_entities = petname.generate(3).split("-")
     disclaimer = petname.generate(words=10, separator=" ").title() + "."
 
-    @registry.register_transform(display_name, input_entity, description, test_settings, output_entities, disclaimer)
+    @registry.register_transform(
+        display_name,
+        input_entity,
+        description,
+        test_settings,
+        output_entities,
+        disclaimer,
+    )
     class TestClass:
         pass
 
@@ -104,7 +129,7 @@ class SettingCsvLine(NamedTuple):
     popup: str
 
 
-def test_transform_to_csv(registry):
+def test_transform_to_csv(registry: TransformRegistry):
     random_class = make_transform(registry)
 
     path_name = name_to_path(random_class.__name__)
@@ -119,7 +144,7 @@ def test_transform_to_csv(registry):
         assert header.rstrip("\n") == TRANSFORMS_CSV_HEADER
 
         line = next(transforms_csv).rstrip("\n")
-        data: TransformCsvLine = TransformCsvLine(*line.split(','))
+        data: TransformCsvLine = TransformCsvLine(*line.split(","))
 
         assert data.owner == registry.owner
         assert data.author == registry.author
@@ -135,7 +160,7 @@ def test_transform_to_csv(registry):
         assert data.seed_ids.split(";") == registry.seed_ids
 
 
-def test_setting_to_csv(registry):
+def test_setting_to_csv(registry: TransformRegistry):
     local_setting = make_transform_setting(global_setting=False)
 
     global_setting = make_transform_setting(global_setting=True)
@@ -151,14 +176,87 @@ def test_setting_to_csv(registry):
         header = next(settings_csv)
         assert header.rstrip("\n") == SETTINGS_CSV_HEADER
 
-        for line, setting in zip(settings_csv.readlines(), [global_setting, local_setting]):
+        for line, setting in zip(
+                settings_csv.readlines(), [global_setting, local_setting]
+        ):
             line = line.rstrip("\n")
-            data: SettingCsvLine = SettingCsvLine(*line.split(','))
+            data: SettingCsvLine = SettingCsvLine(*line.split(","))
 
             assert data.name == setting.id
             assert data.setting_type == setting.setting_type
             assert data.display_name == setting.display_name
             assert data.default == setting.default_value
-            assert data.optional == serialize_bool(setting.optional, 'True', 'False')
-            assert data.popup == serialize_bool(setting.popup, 'Yes', 'No')
+            assert data.optional == serialize_bool(setting.optional, "True", "False")
+            assert data.popup == serialize_bool(setting.popup, "Yes", "No")
 
+
+def test_write_local_mtz_emit_global_settings_warning(
+        registry: TransformRegistry, caplog, snapshot
+):
+    registry.global_settings = [
+        TransformSetting(
+            name="test", display_name="test", setting_type="string", global_setting=True
+        )
+    ]
+
+    with caplog.at_level(logging.WARNING):
+        list(registry._create_local_mtz())
+
+    assert caplog.messages == snapshot
+
+
+def test_write_local_mtz_emit_settings_warning(
+        registry: TransformRegistry, caplog, snapshot
+):
+    local_setting = TransformSetting(
+        name="test",
+        display_name="test",
+        setting_type="string",
+        global_setting=True,
+    )
+
+    @registry.register_transform("", "", "", settings=[local_setting])
+    class TestClass:
+        pass
+
+    with caplog.at_level(logging.WARNING):
+        list(registry._create_local_mtz())
+
+    assert caplog.messages == snapshot
+
+
+def test_write_local_mtz(registry: TransformRegistry, mocker, snapshot):
+    mocker.patch("maltego_trx.mtz.create_last_sync_timestamp", return_value="2022-08-10 07:52:45 UTC")
+    mocker.patch("maltego_trx.utils.serialize_xml", _serialize_xml)
+
+    transform_set = TransformSet(name="test", description="Test Transform Set")
+
+    @registry.register_transform("", "", "", transform_set=transform_set)
+    class TestClass:
+        pass
+
+    mtz_files = list(registry._create_local_mtz(working_dir="/home/maltego"))
+
+    assert mtz_files == snapshot
+
+    files = [path for path, content in mtz_files]
+
+    assert files == snapshot
+
+
+def test_write_local_mtz_file(registry: TransformRegistry, mocker, snapshot):
+    transform_set = TransformSet(name="test", description="Test Transform Set")
+
+    @registry.register_transform("", "", "", transform_set=transform_set)
+    class TestClass:
+        pass
+
+    with tempfile.TemporaryDirectory() as working_dir:
+        mtz_path = os.path.join(working_dir, "local.mtz")
+
+        registry.write_local_mtz(mtz_path=mtz_path)
+
+        assert os.path.exists(mtz_path), "Local mtz file not created"
+
+        with zipfile.ZipFile(mtz_path) as local_mtz:
+            assert local_mtz.infolist() == snapshot
