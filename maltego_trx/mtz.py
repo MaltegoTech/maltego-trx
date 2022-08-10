@@ -3,6 +3,11 @@ from typing import Iterable, List
 from xml.etree.ElementTree import Element, SubElement
 
 
+def create_last_sync_timestamp(timestamp: datetime.datetime = None) -> str:
+    timestamp = timestamp or datetime.datetime.utcnow()
+    return timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+
+
 def create_local_server_xml(transform_names: Iterable[str]) -> Element:
     server_xml = Element("MaltegoServer", attrib={"name": "Local",
                                                   "enabled": "true",
@@ -10,7 +15,7 @@ def create_local_server_xml(transform_names: Iterable[str]) -> Element:
                                                   "url": "http://localhost",
                                                   })
     last_sync_xml = SubElement(server_xml, "LastSync")
-    last_sync_xml.text = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    last_sync_xml.text = create_last_sync_timestamp()
 
     SubElement(server_xml, "Protocol", attrib={"version": "0.0"})
     SubElement(server_xml, "Authentication", attrib={"type": "none"})

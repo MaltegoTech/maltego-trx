@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from itertools import chain
 from typing import List, Optional, Dict, Iterable, Tuple
 
-from maltego_trx.protocol.mtz import create_local_server_xml, create_settings_xml, create_transform_xml, \
+from maltego_trx.mtz import create_local_server_xml, create_settings_xml, create_transform_xml, \
     create_transform_set_xml
 from maltego_trx.utils import filter_unique, pascal_case_to_title, escape_csv_fields, export_as_csv, serialize_bool, \
     name_to_path, serialize_xml
