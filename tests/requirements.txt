@@ -1,6 +1,9 @@
-pytest==7.0.1; python_version == '3.6'
+pytest==7.0.1; python_version <= '3.6'
 pytest==7.1.2; python_version > '3.6'
 
-syrupy==2.3.0
+pytest-mock==3.6.1; python_version <= '3.6'
+pytest-mock==3.8.2; python_version > '3.6'
+
+syrupy==2.3.1
 
 petname==2.6
