@@ -21,13 +21,14 @@ def get_exception_message(msg="An exception occurred with the transform. Check t
 
 def print_transforms():
     print("= Transform Server URLs =")
-    for path in mapping:
-        print(URL_TEMPLATE.replace("<transform_name>", path) + ": " + mapping[path].__name__)
+
+    for idx, path in enumerate(mapping):
+        print(f"{idx}: " + str({URL_TEMPLATE.replace("<transform_name>", path) + ": " + mapping[path].__name__}))
     print("\n")
 
     print("= Local Transform Names =")
-    for path in mapping:
-        print(path + ": " + mapping[path].__name__)
+    for idx, path in enumerate(mapping):
+        print(f"{idx}: " + path + ": " + mapping[path].__name__)
     print("\n")
 
 
