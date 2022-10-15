@@ -23,12 +23,14 @@ def print_transforms():
     print("= Transform Server URLs =")
 
     for idx, path in enumerate(mapping):
-        print(f"{idx}: " + str({URL_TEMPLATE.replace("<transform_name>", path) + ": " + mapping[path].__name__}))
+        tx_name = URL_TEMPLATE.replace("<transform_name>", path) + ": " + mapping[path].__name__
+        print(f"{idx}: {tx_name}")
     print("\n")
 
     print("= Local Transform Names =")
     for idx, path in enumerate(mapping):
-        print(f"{idx}: " + path + ": " + mapping[path].__name__)
+        tx_name = path + ": " + mapping[path].__name__
+        print(f"{idx}: {tx_name}")
     print("\n")
 
 
