@@ -17,7 +17,7 @@ setup(
     install_requires=[
         'flask>=1',
         'six>=1',
-        'cryptography==3.3.2'  # pinned for now as newer versions require setuptools_rust
+        'cryptography==39.0.1'  # pinned for now as newer versions require setuptools_rust
     ],
     extras_require={
         ':python_version == "3.6"': [
