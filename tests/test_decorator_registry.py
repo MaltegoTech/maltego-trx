@@ -120,6 +120,7 @@ class TransformCsvLine(NamedTuple):
     oauth_id: str
     settings_ids: str
     seed_ids: str
+    output_entities: str
 
 
 class SettingCsvLine(NamedTuple):
@@ -160,6 +161,7 @@ def test_transform_to_csv(registry: TransformRegistry):
         assert data.oauth_id == registry.oauth_settings_id
         assert data.settings_ids.split(";") == [s.id for s in tx_settings]
         assert data.seed_ids.split(";") == registry.seed_ids
+        assert data.output_entities.split(";") == tx_meta.output_entities
 
 
 def test_setting_to_csv(registry: TransformRegistry):

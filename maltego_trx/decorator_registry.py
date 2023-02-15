@@ -25,7 +25,7 @@ from maltego_trx.utils import (
 TRANSFORMS_CSV_HEADER = (
     "Owner,Author,Disclaimer,Description,Version,"
     "Name,UIName,URL,entityName,"
-    "oAuthSettingId,transformSettingIDs,seedIDs"
+    "oAuthSettingId,transformSettingIDs,seedIDs,outputEntities"
 )
 SETTINGS_CSV_HEADER = "Name,Type,Display,DefaultValue,Optional,Popup"
 
@@ -150,6 +150,7 @@ class TransformRegistry:
                 # combine global and transform scoped settings
                 ";".join(chain(meta_settings, global_settings_full_names)),
                 ";".join(self.seed_ids),
+                ";".join(transform_meta.output_entities)
             ]
 
             escaped_fields = escape_csv_fields(*transform_row)
