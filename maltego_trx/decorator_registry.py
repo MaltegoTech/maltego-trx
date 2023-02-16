@@ -22,11 +22,18 @@ from maltego_trx.utils import (
     serialize_xml,
 )
 
+LEGACY_TRANSFORMS_CSV_HEADER = (
+    "Owner,Author,Disclaimer,Description,Version,"
+    "Name,UIName,URL,entityName,"
+    "oAuthSettingId,transformSettingIDs,seedIDs"
+)
+
 TRANSFORMS_CSV_HEADER = (
     "Owner,Author,Disclaimer,Description,Version,"
     "Name,UIName,URL,entityName,"
     "oAuthSettingId,transformSettingIDs,seedIDs,outputEntities"
 )
+
 SETTINGS_CSV_HEADER = "Name,Type,Display,DefaultValue,Optional,Popup"
 
 
@@ -127,7 +134,7 @@ class TransformRegistry:
 
         return decorated
 
-    def _create_transforms_config(self) -> Iterable[str]:
+    def _create_transforms_config(self, include_output_entities: bool = True) -> Iterable[str]:
         global_settings_full_names = [gs.id for gs in self.global_settings]
 
         for transform_name, transform_meta in self.transform_metas.items():
@@ -149,23 +156,30 @@ class TransformRegistry:
                 ";".join(self.oauth_settings_id),
                 # combine global and transform scoped settings
                 ";".join(chain(meta_settings, global_settings_full_names)),
-                ";".join(self.seed_ids),
-                ";".join(transform_meta.output_entities)
+                ";".join(self.seed_ids)
             ]
+
+            if include_output_entities:
+                transform_row.append(";".join(transform_meta.output_entities))
 
             escaped_fields = escape_csv_fields(*transform_row)
             yield ",".join(escaped_fields)
 
     def write_transforms_config(
-        self, config_path: str = "./transforms.csv", csv_line_limit: int = 100
+        self, config_path: str = "./transforms.csv", csv_line_limit: int = 100, include_output_entities: bool = True
     ):
         """Exports the collected transform metadata as a csv-file to config_path"""
 
-        csv_lines = self._create_transforms_config()
+        csv_lines = self._create_transforms_config(include_output_entities=include_output_entities)
 
-        export_as_csv(
-            TRANSFORMS_CSV_HEADER, tuple(csv_lines), config_path, csv_line_limit
-        )
+        if not include_output_entities:
+            export_as_csv(
+                LEGACY_TRANSFORMS_CSV_HEADER, tuple(csv_lines), config_path, csv_line_limit
+            )
+        else:
+            export_as_csv(
+                TRANSFORMS_CSV_HEADER, tuple(csv_lines), config_path, csv_line_limit
+            )
 
     def _create_settings_config(self) -> Iterable[str]:
         chained_settings = chain(
