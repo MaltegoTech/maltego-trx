@@ -6,6 +6,7 @@ with open("README.md", "r") as readme_md:
 
 setup(
     name='maltego-trx',
+    python_requires='>=3.8.0',
     version=VERSION,
     description='Python library used to develop Maltego transforms',
     long_description=long_description,
@@ -19,11 +20,6 @@ setup(
         'six>=1.0.0',
         'cryptography>=39.0.1'
     ],
-    extras_require={
-        ':python_version == "3.6"': [
-            'dataclasses',
-        ],
-    },
     packages=[
         'maltego_trx',
         'maltego_trx/template_dir',

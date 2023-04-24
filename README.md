@@ -1,10 +1,12 @@
 # Maltego TRX Python Library
 
-[![Runs with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
-[![PyTest with Python3.6 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml)
+[![Runs with Python3.8 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
+[![PyTest with Python3.8 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml)
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+
+__1.6.1__: Update cryptography and Flask dependency and deprecate Python 3.7
 
 __1.6.0__: Automatically generate am `.mtz` for your local transforms
 
@@ -22,7 +24,7 @@ __1.4.2__: Fixed python3.6 incompatibility
 
 ## Getting Started
 
-_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.6 or higher to use
+_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.8 or higher to use
 up-to-date versions of Maltego TRX._
 
 To install the trx library run the following command:
