@@ -15,9 +15,9 @@ setup(
     author_email='support@maltego.com',
     license='MIT',
     install_requires=[
-        'flask>=1',
-        'six>=1',
-        'cryptography==3.3.2'  # pinned for now as newer versions require setuptools_rust
+        'flask>=2.2.0',
+        'six>=1.0.0',
+        'cryptography>=39.0.1'
     ],
     extras_require={
         ':python_version == "3.6"': [
