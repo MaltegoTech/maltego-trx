@@ -17,7 +17,6 @@ setup(
     license='MIT',
     install_requires=[
         'flask>=2.2.0',
-        'six>=1.0.0',
         'cryptography>=39.0.1'
     ],
     packages=[

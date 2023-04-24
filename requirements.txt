@@ -1,3 +1,2 @@
 flask>=2.2.3
-six>=1.16.0
 cryptography==39.0.1
