@@ -1,13 +1,16 @@
 name: 'Sonatype Jake'
 
-on: [ push ]
+on:
+  pull_request_target:
+    branches:
+      - 'master'
 
 jobs:
   security:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.6.x', '3.10.x' ]
+        python-version: [ '3.8.x', '3.9.x', '3.10.x' ]
 
     steps:
       - uses: actions/checkout@v2
@@ -19,9 +22,6 @@ jobs:
 
       - name: Run jake from Sonatype
         run: |
-          # needed for Python3.6
-          export PYTHONIOENCODING=utf-8
-          
           python -m pip install --upgrade pip
           pip3 install -r requirements.txt
           pip3 freeze > frozen.requirements.txt

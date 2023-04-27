@@ -7,8 +7,6 @@ from typing import TypeVar, Callable, Hashable, Iterable, Generator, Sequence
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 
-from six import text_type, binary_type
-
 logger = logging.getLogger("maltego-trx")
 
 
@@ -39,12 +37,12 @@ def make_printable(val):
 
 
 def force_encoding(val, encoding):
-    if type(val) == text_type:
+    if isinstance(val, str):
         return val.encode(encoding, 'replace').decode(encoding, 'replace')
-    elif type(val) == binary_type:
+    elif isinstance(val, bytes):
         return val.decode(encoding, 'replace')
     else:
-        return text_type(val).encode(encoding, 'replace').decode(encoding, 'replace')
+        return str(val).encode(encoding, 'replace').decode(encoding, 'replace')
 
 
 def remove_invalid_xml_chars(val):
