@@ -1,10 +1,12 @@
-name: 'Runs with Python3.6 - Python3.10'
+name: 'Runs with Python3.8 - Python3.10'
 
 on:
   pull_request_target:
     branches:
-      - 'master'
-
+      - master
+  push:
+    branches:
+      - master
 jobs:
   boots:
     runs-on: ubuntu-latest
