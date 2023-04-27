@@ -13,6 +13,7 @@ from maltego_trx.decorator_registry import (
     TransformSetting,
     TransformRegistry,
     TRANSFORMS_CSV_HEADER,
+    LEGACY_TRANSFORMS_CSV_HEADER,
     SETTINGS_CSV_HEADER,
     TransformSet,
 )
@@ -120,7 +121,21 @@ class TransformCsvLine(NamedTuple):
     oauth_id: str
     settings_ids: str
     seed_ids: str
+    output_entities: str
 
+class LegacyTransformCsvLine(NamedTuple):
+    owner: str
+    author: str
+    disclaimer: str
+    description: str
+    version: str
+    name: str
+    display_name: str
+    host: str
+    input_entity: str
+    oauth_id: str
+    settings_ids: str
+    seed_ids: str
 
 class SettingCsvLine(NamedTuple):
     name: str
@@ -139,9 +154,10 @@ def test_transform_to_csv(registry: TransformRegistry):
     tx_meta = registry.transform_metas.get(path_name)
     tx_settings = registry.transform_settings.get(path_name, [])
 
-    registry.write_transforms_config()
+    output_path = "./transforms_with_output_entities.csv"
+    registry.write_transforms_config(config_path=output_path,include_output_entities=True)
 
-    with open("./transforms.csv") as transforms_csv:
+    with open(output_path) as transforms_csv:
         header = next(transforms_csv)
         assert header.rstrip("\n") == TRANSFORMS_CSV_HEADER
 
@@ -160,7 +176,38 @@ def test_transform_to_csv(registry: TransformRegistry):
         assert data.oauth_id == registry.oauth_settings_id
         assert data.settings_ids.split(";") == [s.id for s in tx_settings]
         assert data.seed_ids.split(";") == registry.seed_ids
+        assert data.output_entities.split(";") == tx_meta.output_entities
 
+def test_transform_to_legacy_csv(registry: TransformRegistry):
+    random_class = make_transform(registry)
+
+    path_name = name_to_path(random_class.__name__)
+
+    tx_meta = registry.transform_metas.get(path_name)
+    tx_settings = registry.transform_settings.get(path_name, [])
+
+    output_path = "./transforms_no_output_entities.csv"
+    registry.write_transforms_config(config_path=output_path,include_output_entities=False)
+
+    with open(output_path) as transforms_csv:
+        header = next(transforms_csv)
+        assert header.rstrip("\n") == LEGACY_TRANSFORMS_CSV_HEADER
+
+        line = next(transforms_csv).rstrip("\n")
+        data: LegacyTransformCsvLine = LegacyTransformCsvLine(*line.split(","))
+
+        assert data.owner == registry.owner
+        assert data.author == registry.author
+        assert data.disclaimer == tx_meta.disclaimer
+        assert data.description == tx_meta.description
+        assert data.version == registry.version
+        assert data.name == tx_meta.class_name
+        assert data.display_name == tx_meta.display_name
+        assert data.host == os.path.join(registry.host_url, "run", path_name)
+        assert data.input_entity == tx_meta.input_entity
+        assert data.oauth_id == registry.oauth_settings_id
+        assert data.settings_ids.split(";") == [s.id for s in tx_settings]
+        assert data.seed_ids.split(";") == registry.seed_ids
 
 def test_setting_to_csv(registry: TransformRegistry):
     local_setting = make_transform_setting(global_setting=False)

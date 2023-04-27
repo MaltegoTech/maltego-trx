@@ -8,7 +8,7 @@ from maltego_trx.server import app as application
 
 register_transform_classes(transforms)
 
-registry.write_transforms_config()
+registry.write_transforms_config(include_output_entities=True)
 registry.write_settings_config()
 
 if __name__ == '__main__':
