@@ -16,8 +16,9 @@ setup(
     author_email='support@maltego.com',
     license='MIT',
     install_requires=[
-        'flask>=2.2.0',
-        'cryptography>=39.0.1'
+        'flask>=3.0.0',
+        'cryptography>=41.0.0',
+        'requests>=2.31.0'
     ],
     packages=[
         'maltego_trx',

@@ -6,6 +6,8 @@
 
 ## Release Notes
 
+__1.6.2__: Update cryptography (42.0.0) and Flask (3.0.0) dependencies
+
 __1.6.1__: Update cryptography and Flask dependency and deprecate Python 3.7
 
 __1.6.0__: Automatically generate am `.mtz` for your local transforms
