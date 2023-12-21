@@ -8,3 +8,6 @@ maltego_trx.egg-info
 venv
 env
 *.code-workspace
+**/*.pem
+settings.csv
+transforms.csv
