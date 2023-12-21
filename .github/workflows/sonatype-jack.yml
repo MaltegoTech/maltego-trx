@@ -27,4 +27,4 @@ jobs:
           pip3 freeze > frozen.requirements.txt
           
           pip3 install jake
-          jake ddt
+          jake ddt --whitelist jake-whitelist.json
