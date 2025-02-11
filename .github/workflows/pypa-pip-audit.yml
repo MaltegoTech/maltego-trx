@@ -1,0 +1,25 @@
+# https://github.com/pypa/gh-action-pip-a
+name: 'PyPA pip-audit'
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+    
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install
+        run: |
+          python -m venv env/
+          source env/bin/activate
+          python -m pip install .
+      - uses: pypa/gh-action-pip-audit@v1.1.0
+        with:
+          virtual-environment: env/
