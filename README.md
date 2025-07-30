@@ -6,6 +6,8 @@
 
 ## Release Notes
 
+__1.6.3__: Update cryptography (45.0.5), requests (2.32.4) and Flask (3.1.1) dependencies
+
 __1.6.2__: Update cryptography (42.0.0) and Flask (3.0.0) dependencies
 
 __1.6.1__: Update cryptography and Flask dependency and deprecate Python 3.7
