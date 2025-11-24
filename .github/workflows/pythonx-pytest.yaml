@@ -1,4 +1,4 @@
-name: 'PyTest with Python3.8 - Python3.13'
+name: 'PyTest with Python3.10 - Python3.14'
 
 on:
   pull_request:
