@@ -5,6 +5,7 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+__1.7.0__: Update Python versions and remove support for Python 3.9 and lower.
 
 __1.6.3__: Update cryptography (45.0.5), requests (2.32.4) and Flask (3.1.1) dependencies
 
