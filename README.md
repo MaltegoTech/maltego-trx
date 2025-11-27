@@ -28,8 +28,8 @@ __1.4.2__: Fixed python3.6 incompatibility
 
 ## Getting Started
 
-_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.8 or higher to use
-up-to-date versions of Maltego TRX._
+_Note: Support for Python 2 has been officially discontinued as of July 2021. Also, support for python versions lower than 3.9 have been removed. 
+Please use Python 3.10 or higher to use up-to-date versions of Maltego TRX._
 
 To install the trx library run the following command:
 
