@@ -6,7 +6,7 @@ with open("README.md", "r") as readme_md:
 
 setup(
     name='maltego-trx',
-    python_requires='>=3.8.0',
+    python_requires='>=3.10.0',
     version=VERSION,
     description='Python library used to develop Maltego transforms',
     long_description=long_description,
@@ -16,9 +16,9 @@ setup(
     author_email='support@maltego.com',
     license='MIT',
     install_requires=[
-        'flask>=3.0.0',
-        'cryptography>=41.0.0',
-        'requests>=2.31.0'
+        'flask>=3.1.1',
+        'cryptography>=45.0.5',
+        'requests>=2.32.4'
     ],
     packages=[
         'maltego_trx',

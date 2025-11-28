@@ -5,6 +5,8 @@
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
 
 ## Release Notes
+__1.7.0__: Update Python versions and remove support for Python 3.9 and lower
+           Update cryptography (45.0.5), requests (2.32.4) and Flask (3.1.1) dependencies
 
 __1.6.2__: Update cryptography (42.0.0) and Flask (3.0.0) dependencies
 
@@ -26,8 +28,8 @@ __1.4.2__: Fixed python3.6 incompatibility
 
 ## Getting Started
 
-_Note: Support for Python 2 has been officially discontinued as of July 2021. Please use Python 3.8 or higher to use
-up-to-date versions of Maltego TRX._
+_Note: Support for Python 2 has been officially discontinued as of July 2021. Also, support for python versions lower than 3.9 have been removed. 
+Please use Python 3.10 or higher to use up-to-date versions of Maltego TRX._
 
 To install the trx library run the following command:
 

@@ -1,3 +1,4 @@
+# serializer version: 1
 # name: test_all_null_values
   '<MaltegoMessage><MaltegoTransformResponseMessage><Entities><Entity Type="maltego.Phrase"><Value></Value><Weight>100</Weight><AdditionalFields><Field DisplayName="None" MatchingRule="loose" Name="None"></Field><Field DisplayName="Label" MatchingRule="loose" Name="link#maltego.link.label"></Field><Field DisplayName="Thickness" MatchingRule="loose" Name="link#maltego.link.thickness">None</Field><Field DisplayName="LinkColor" MatchingRule="loose" Name="link#maltego.link.color"></Field><Field DisplayName="LinkStyle" MatchingRule="loose" Name="link#maltego.link.style"></Field><Field DisplayName="Notes" MatchingRule="loose" Name="notes#"></Field></AdditionalFields><Overlays><Overlay position="NW" propertyName="None" type="colour"></Overlay></Overlays></Entity></Entities><UIMessages><UIMessage MessageType="Inform">None</UIMessage></UIMessages></MaltegoTransformResponseMessage></MaltegoMessage>'
 # ---

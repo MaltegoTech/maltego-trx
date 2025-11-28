@@ -1,3 +1,4 @@
+# serializer version: 1
 # name: test_create_local_server_xml
   '<MaltegoServer description="Local transforms hosted on this machine" enabled="true" name="Local" url="http://localhost"><LastSync>2022-08-10 07:52:45 UTC</LastSync><Protocol version="0.0"></Protocol><Authentication type="none"></Authentication><Transforms><Transform name="to_lower"></Transform><Transform name="to_upper"></Transform><Transform name="to_title"></Transform></Transforms><Seeds></Seeds></MaltegoServer>'
 # ---

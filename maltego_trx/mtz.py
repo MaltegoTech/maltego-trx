@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, SubElement
 
 
 def create_last_sync_timestamp(timestamp: datetime.datetime = None) -> str:
-    timestamp = timestamp or datetime.datetime.utcnow()
+    timestamp = timestamp or datetime.datetime.now(datetime.timezone.utc)
     return timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
 
 
