@@ -1,0 +1,13 @@
+repos:
+  # https://github.com/pypa/pip-audit?tab=readme-ov-file#pre-commit-support
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.8.0
+    hooks:
+      -   id: pip-audit
+          args: ["-r", "requirements.txt"]
+
+ci:
+  # Leave pip-audit to only run locally and not in CI
+  # pre-commit.ci does not allow network calls
+  skip: [pip-audit]
+  
