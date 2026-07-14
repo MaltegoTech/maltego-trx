@@ -1,5 +1,7 @@
 # Maltego TRX Python Library
 
+> **Archived:** This legacy SDK is no longer maintained. For new transform development, use the actively maintained [Maltego Transforms SDK](https://github.com/MaltegoTech/maltego-transforms).
+
 [![Runs with Python3.8 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-boot-check.yaml)
 [![PyTest with Python3.8 - Python3.10](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/pythonx-pytest.yaml)
 [![Sonatype Jake](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml/badge.svg)](https://github.com/paterva/maltego-trx/actions/workflows/sonatype-jack.yml)
